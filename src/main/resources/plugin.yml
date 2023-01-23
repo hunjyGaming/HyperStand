@@ -1,0 +1,14 @@
+name: HyperStand
+version: '${project.version}'
+main: de.hunjy.HyperStand
+api-version: 1.19
+prefix: HyperStand
+authors: [ hunjy ]
+description: A ArmorStandToll for HyperKnox
+
+depend:
+  - NBTAPI
+  - HeadDatabase
+
+commands:
+  hyperstand:
