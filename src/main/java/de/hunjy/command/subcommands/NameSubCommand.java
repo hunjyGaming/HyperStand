@@ -2,7 +2,6 @@ package de.hunjy.command.subcommands;
 
 import de.hunjy.HyperStand;
 import de.hunjy.command.SubCommand;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
