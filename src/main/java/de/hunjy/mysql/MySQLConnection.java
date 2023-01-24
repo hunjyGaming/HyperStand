@@ -6,8 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MySQLConnection {
+    private final ExecutorService service = Executors.newFixedThreadPool(1);
     public Connection con;
     String host;
     String name;
@@ -50,21 +53,22 @@ public class MySQLConnection {
     }
 
     public void query(String qry) {
-        if (!this.isConnected()) {
-            this.connect();
-        }
-
-        if (this.isConnected()) {
-            try {
-                this.con.createStatement().executeUpdate(qry);
-            } catch (SQLException var3) {
-                var3.printStackTrace();
+        this.service.execute(() -> {
+            if (!this.isConnected()) {
+                this.connect();
             }
-        }
 
+            if (this.isConnected()) {
+                try {
+                    this.con.createStatement().executeUpdate(qry);
+                } catch (SQLException var3) {
+                    var3.printStackTrace();
+                }
+            }
+        });
     }
 
-    public ResultSet getResult(String qry) {
+    private ResultSet getResult(String qry) {
         if (!this.isConnected()) {
             this.connect();
         }
