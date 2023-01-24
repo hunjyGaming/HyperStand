@@ -71,13 +71,18 @@ public class TemplateManager {
     public HashSet<ArmorStandTemplate> loadPlayerTemplates(Player player) throws SQLException {
         ResultSet resultSet = mysql.getResult("SELECT * FROM hyperstand WHERE UUID='" + player.getUniqueId() + "';");
         HashSet<ArmorStandTemplate> templates = new HashSet<>();
+
+        if(resultSet == null) {
+            return templates;
+        }
+
         while (resultSet.next()) {
             String name = resultSet.getString("name");
             String rawData = resultSet.getString("rawData");
             String description = resultSet.getString("description");
             templates.add(new ArmorStandTemplate(name, new String(Base64.getDecoder().decode(rawData.getBytes())), description));
         }
-
+        resultSet.close();
         return templates;
     }
 

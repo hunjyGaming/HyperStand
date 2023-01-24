@@ -1,5 +1,7 @@
 package de.hunjy.mysql;
 
+import de.hunjy.logger.ILogger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,10 +36,10 @@ public class MySQLConnection {
         if (this.isConnected()) {
             try {
                 this.con.close();
-                System.out.println("[MySQL] Verbindung zur MySQL beendet!");
+                ILogger.log("[MySQL] Verbindung zur MySQL beendet!");
             } catch (SQLException var2) {
                 var2.printStackTrace();
-                System.out.println("[MySQL] §4Fehler: §c" + var2.getMessage());
+                ILogger.log("[MySQL] §4Fehler: §c" + var2.getMessage());
             }
         }
 
