@@ -11,10 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 
 public class EditorEvents implements Listener {
 
@@ -54,6 +52,22 @@ public class EditorEvents implements Listener {
                 event.setCancelled(true);
                 armorStandManager.finishEditing(player);
             }
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (armorStandManager.isEditing(player)) {
+            armorStandManager.finishEditing(player);
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        if (armorStandManager.isEditing(player)) {
+            armorStandManager.finishEditing(player);
         }
     }
 

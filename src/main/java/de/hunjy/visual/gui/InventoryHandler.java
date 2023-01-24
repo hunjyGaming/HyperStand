@@ -73,7 +73,7 @@ public class InventoryHandler {
         inventory.setItem(24, armorStand.getItem(EquipmentSlot.HAND));
         inventory.setItem(25, armorStand.getItem(EquipmentSlot.OFF_HAND));
 
-        inventory.setItem((inventory.getSize() - 9), new ItemBuilder("8790").setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
+        inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
 
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
@@ -94,7 +94,7 @@ public class InventoryHandler {
         inventory.setItem(22, new ItemBuilder(Material.GLOWSTONE_DUST).setDisplayName("§eLeuchten").addLore("", "§7Aktuell: " + ((armorStand.isGlowing()) ? "§aAn" : "§cAus"), "", "§7Farbe: " + ((armorStandManager.getCurrentGlowColor(armorStand) == null) ? "§c-" : Colorizer.hex(armorStandManager.getCurrentGlowColor(armorStand).getDisplayName(), armorStandManager.getCurrentGlowColor(armorStand).getPrettyColor()))).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "TOGGLE_GLOW").build());
         inventory.setItem(23, new ItemBuilder(Material.TRIPWIRE_HOOK).setDisplayName("§eAusrüstung sperren").addLore("", "§7Aktuell: " + ((armorStand.hasEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.REMOVING_OR_CHANGING)) ? "§aAn" : "§cAus")).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "TOGGLE_LOCK").build());
 
-        inventory.setItem((inventory.getSize() - 9), new ItemBuilder("8790").setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
+        inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
 
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
@@ -122,7 +122,7 @@ public class InventoryHandler {
         inventory.setItem(25, armorStandManager.getGlowColorByName("HYPERSTAND_GLOW_PINK").getDisplayItemWithID(armorStand));
 
         inventory.setItem(31, new ItemBuilder(Material.BARRIER).setDisplayName("§cGlow Aus").addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_GLOW_COLOR", "OFF").build());
-        inventory.setItem((inventory.getSize() - 9), new ItemBuilder("8790").setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_SETTINGS_MENU").build());
+        inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_SETTINGS_MENU").build());
 
         player.openInventory(inventory);
 
@@ -139,13 +139,13 @@ public class InventoryHandler {
         inventory.setItem(21, new ItemBuilder(Material.LEATHER_CHESTPLATE).setDisplayName("§eKörper bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_BODY").build());
         inventory.setItem(22, new ItemBuilder(Material.STICK).setDisplayName("§eLinken Arm bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LARM").build());
 
-        inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").addLore("", "§7Wähle aus §e" + HyperStand.getInstance().getTemplateManager().getTemplateCount() + " §7Vorlagen!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
+        inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
 
         inventory.setItem(29, new ItemBuilder(Material.STICK).setDisplayName("§eRechtes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RLEG").build());
         inventory.setItem(30, new ItemBuilder(Material.COMPASS).setDisplayName("§eAufheben").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_PICKUP").build());
         inventory.setItem(31, new ItemBuilder(Material.STICK).setDisplayName("§eLinkes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LLEG").build());
 
-        inventory.setItem((inventory.getSize() - 9), new ItemBuilder("8790").setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
+        inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
     }
@@ -161,11 +161,11 @@ public class InventoryHandler {
             }
         }
 
-        for (ArmorStandTemplate template : HyperStand.getInstance().getTemplateManager().getTemplates()) {
+        for (ArmorStandTemplate template : HyperStand.getInstance().getTemplateManager().getTemplates(player)) {
             inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + template.getName()).addLore("", "§7" + template.getDescription()).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("TEMPLATE_NAME", template.getName()).build());
         }
 
-        inventory.setItem((inventory.getSize() - 9), new ItemBuilder("8790").setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
+        inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
         player.openInventory(inventory);
     }
 

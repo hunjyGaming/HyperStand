@@ -50,6 +50,7 @@ public final class HyperStand extends JavaPlugin {
         HyperStandCommand.registerSubCommand(new EditSubCommand());
         HyperStandCommand.registerSubCommand(new SaveSubCommand());
         HyperStandCommand.registerSubCommand(new NameSubCommand());
+        HyperStandCommand.registerSubCommand(new ArmorSubCommand());
         HyperStandCommand.registerSubCommand(new CreateSubCommand());
     }
 

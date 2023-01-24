@@ -16,17 +16,25 @@ public class NameSubCommand implements SubCommand {
             return;
         }
 
-        String displayName = "";
-        for (int i = 1; i < args.length; i++) {
-            displayName += args[i] + " ";
-        }
-
-        displayName = displayName.substring(0, displayName.length() - 2);
-
         Entity entity = player.getTargetEntity(5);
-
         if (entity != null) if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
+
+            if (args.length == 2) {
+                if (args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("entfrenen")) {
+                    armorStand.setCustomName(null);
+                    armorStand.setCustomNameVisible(false);
+                    return;
+                }
+            }
+            String displayName = "";
+
+            for (int i = 1; i < args.length; i++) {
+                displayName += args[i] + " ";
+            }
+
+            displayName = displayName.substring(0, displayName.length() - 1);
+
 
             if (HyperStand.getInstance().getArmorStandManager().trySelectArmorStand(player, armorStand)) {
                 return;

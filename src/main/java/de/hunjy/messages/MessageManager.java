@@ -24,6 +24,8 @@ public class MessageManager {
         messages.put("HYPERSTAND_NO_ACCESS", "§cDu kannst den ArmorStand nicht bearbeiten!");
         messages.put("HYPERSTAND_ALLRADY_EXIST", "§cDas ist bereits ein HyperStand");
         messages.put("HYPERSTAND_CREATET", "§aDu hast den HyperStand erstellt!");
+        messages.put("create_template", "§7Die Position wird gespeichert...");
+        messages.put("create_template_success", "§aDie Position wurde erfolgreich gespeichert!");
     }
 
     public String get(String key) {

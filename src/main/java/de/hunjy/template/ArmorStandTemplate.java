@@ -16,42 +16,41 @@ public class ArmorStandTemplate {
     EulerAngle leftLegPosition;
     EulerAngle rightLegPosition;
 
-    YamlConfiguration configuration;
+    public ArmorStandTemplate(String name, String data, String description) {
+        this.name = name;
+        this.description = description;
+        String[] configuration = data.split(";");
 
-    public ArmorStandTemplate(YamlConfiguration configuration) {
-        this.configuration = configuration;
-
-        this.name = configuration.getString("name");
-        this.description = configuration.getString("description");
-
-        double tmpX = configuration.getDouble("position.head.X");
-        double tmpY = configuration.getDouble("position.head.Y");
-        double tmpZ = configuration.getDouble("position.head.Z");
+        int i = 0;
+        double tmpX = Double.parseDouble(configuration[i++]);
+        double tmpY = Double.parseDouble(configuration[i++]);
+        double tmpZ = Double.parseDouble(configuration[i++]);
         headPosition = new EulerAngle(tmpX, tmpY, tmpZ);
 
-        tmpX = configuration.getDouble("position.body.X");
-        tmpY = configuration.getDouble("position.body.Y");
-        tmpZ = configuration.getDouble("position.body.Z");
+
+        tmpX = Double.parseDouble(configuration[i++]);
+        tmpY = Double.parseDouble(configuration[i++]);
+        tmpZ = Double.parseDouble(configuration[i++]);
         bodyPosition = new EulerAngle(tmpX, tmpY, tmpZ);
 
-        tmpX = configuration.getDouble("position.leftarm.X");
-        tmpY = configuration.getDouble("position.leftarm.Y");
-        tmpZ = configuration.getDouble("position.leftarm.Z");
+        tmpX = Double.parseDouble(configuration[i++]);
+        tmpY = Double.parseDouble(configuration[i++]);
+        tmpZ = Double.parseDouble(configuration[i++]);
         leftArmPosition = new EulerAngle(tmpX, tmpY, tmpZ);
 
-        tmpX = configuration.getDouble("position.rightarm.X");
-        tmpY = configuration.getDouble("position.rightarm.Y");
-        tmpZ = configuration.getDouble("position.rightarm.Z");
+        tmpX = Double.parseDouble(configuration[i++]);
+        tmpY = Double.parseDouble(configuration[i++]);
+        tmpZ = Double.parseDouble(configuration[i++]);
         rightArmPosition = new EulerAngle(tmpX, tmpY, tmpZ);
 
-        tmpX = configuration.getDouble("position.leftleg.X");
-        tmpY = configuration.getDouble("position.leftleg.Y");
-        tmpZ = configuration.getDouble("position.leftleg.Z");
+        tmpX = Double.parseDouble(configuration[i++]);
+        tmpY = Double.parseDouble(configuration[i++]);
+        tmpZ = Double.parseDouble(configuration[i++]);
         leftLegPosition = new EulerAngle(tmpX, tmpY, tmpZ);
 
-        tmpX = configuration.getDouble("position.rightleg.X");
-        tmpY = configuration.getDouble("position.rightleg.Y");
-        tmpZ = configuration.getDouble("position.rightleg.Z");
+        tmpX = Double.parseDouble(configuration[i++]);
+        tmpY = Double.parseDouble(configuration[i++]);
+        tmpZ = Double.parseDouble(configuration[i]);
         rightLegPosition = new EulerAngle(tmpX, tmpY, tmpZ);
     }
 
@@ -96,7 +95,4 @@ public class ArmorStandTemplate {
         return rightLegPosition;
     }
 
-    public YamlConfiguration getConfiguration() {
-        return configuration;
-    }
 }

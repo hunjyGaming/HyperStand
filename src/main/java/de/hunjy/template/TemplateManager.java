@@ -1,54 +1,88 @@
 package de.hunjy.template;
 
 import de.hunjy.HyperStand;
-import de.hunjy.logger.ILogger;
+import de.hunjy.mysql.MySQLConnection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class TemplateManager {
 
     private File folder;
+    private File file;
+    private YamlConfiguration configuration;
 
+    private HashMap<UUID, HashSet<ArmorStandTemplate>> playerTemplates;
 
-    private HashSet<File> templateFiles;
-    private HashSet<ArmorStandTemplate> templates;
+    private MySQLConnection mysql;
 
     public TemplateManager() {
-        folder = new File(HyperStand.getInstance().getDataFolder().getPath() + "//templates");
-        if (!folder.exists())
+        playerTemplates = new HashMap<>();
+        folder = new File(HyperStand.getInstance().getDataFolder().getPath());
+        if (!folder.exists()) {
             folder.mkdirs();
-        templateFiles = new HashSet<>();
-
-
-        for (File file : folder.listFiles()) {
-            if (file.isDirectory())
-                continue;
-
-            if (!file.getName().endsWith(".yml"))
-                continue;
-
-            templateFiles.add(file);
+        }
+        file = new File(folder, "config.yml");
+        configuration = YamlConfiguration.loadConfiguration(file);
+        if (!file.exists()) {
+            configuration.set("mysql.host", "localhost");
+            configuration.set("mysql.name", "user");
+            configuration.set("mysql.password", "password");
+            configuration.set("mysql.database", "database");
+            try {
+                configuration.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        loadTemplates();
+        configuration = YamlConfiguration.loadConfiguration(file);
+
+        mysql = new MySQLConnection(configuration.getString("mysql.host"), configuration.getString("mysql.name"), configuration.getString("mysql.password"), configuration.getString("mysql.database"));
+        mysql.query("CREATE TABLE IF NOT EXISTS hyperstand (" +
+                " UUID VARCHAR(60) NOT NULL," +
+                " name VARCHAR(60) NOT NULL," +
+                " rawData LONGTEXT NOT NULL," +
+                " description VARCHAR(255) NOT NULL," +
+                " primary key (UUID, name)" +
+                ")");
     }
 
-    public void loadTemplates() {
-        ILogger.log("Loading ArmorStand Templates....");
-        templates = new HashSet<>();
-        for (File file : templateFiles) {
-            YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
-            templates.add(new ArmorStandTemplate(configuration));
+    public HashSet<ArmorStandTemplate> getTemplates(Player player) {
+        if (!playerTemplates.containsKey(player.getUniqueId())) {
+            try {
+                playerTemplates.put(player.getUniqueId(), loadPlayerTemplates(player));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-        ILogger.log("Successfully loaded [" + getTemplateCount() + "] ArmorStand templates.");
+        return playerTemplates.get(player.getUniqueId());
     }
 
-    public ArmorStandTemplate templateByName(String name) {
-        for (ArmorStandTemplate template : templates) {
+    public HashSet<ArmorStandTemplate> loadPlayerTemplates(Player player) throws SQLException {
+        ResultSet resultSet = mysql.getResult("SELECT * FROM hyperstand WHERE UUID='" + player.getUniqueId() + "';");
+        HashSet<ArmorStandTemplate> templates = new HashSet<>();
+        while (resultSet.next()) {
+            String name = resultSet.getString("name");
+            String rawData = resultSet.getString("rawData");
+            String description = resultSet.getString("description");
+            templates.add(new ArmorStandTemplate(name, new String(Base64.getDecoder().decode(rawData.getBytes())), description));
+        }
+
+        return templates;
+    }
+
+    public ArmorStandTemplate templateByName(Player player, String name) {
+        for (ArmorStandTemplate template : playerTemplates.get(player.getUniqueId())) {
             if (template.getName().equals(name)) {
                 return template;
             }
@@ -56,56 +90,62 @@ public class TemplateManager {
         return null;
     }
 
-    public int getTemplateCount() {
-        return templates.size();
+    public int getTemplateCount(Player player) {
+        return playerTemplates.get(player.getUniqueId()).size();
     }
 
+    public void saveTemplate(Player player, String name, String description, ArmorStand armorStand) {
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template", true));
+        StringBuilder stringBuilder = new StringBuilder();
 
-    public HashSet<ArmorStandTemplate> getTemplates() {
-        return templates;
-    }
+        stringBuilder.append(armorStand.getHeadPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getHeadPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getHeadPose().getZ());
+        stringBuilder.append(";");
 
-    public boolean saveTemplate(String name, String description, ArmorStand armorStand) {
-        File file = new File(folder, name.toLowerCase().replace(" ", "_") + ".yml");
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+        stringBuilder.append(armorStand.getBodyPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getBodyPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getBodyPose().getZ());
+        stringBuilder.append(";");
 
-        configuration.set("name", name);
-        configuration.set("description", description);
+        stringBuilder.append(armorStand.getLeftArmPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getLeftArmPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getLeftArmPose().getZ());
+        stringBuilder.append(";");
 
-        configuration.set("position.head.X", armorStand.getHeadPose().getX());
-        configuration.set("position.head.Y", armorStand.getHeadPose().getY());
-        configuration.set("position.head.Z", armorStand.getHeadPose().getZ());
+        stringBuilder.append(armorStand.getRightArmPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getRightArmPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getRightArmPose().getZ());
+        stringBuilder.append(";");
 
-        configuration.set("position.body.X", armorStand.getBodyPose().getX());
-        configuration.set("position.body.Y", armorStand.getBodyPose().getY());
-        configuration.set("position.body.Z", armorStand.getBodyPose().getZ());
+        stringBuilder.append(armorStand.getLeftLegPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getLeftLegPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getLeftLegPose().getZ());
+        stringBuilder.append(";");
 
-        configuration.set("position.leftarm.X", armorStand.getLeftArmPose().getX());
-        configuration.set("position.leftarm.Y", armorStand.getLeftArmPose().getY());
-        configuration.set("position.leftarm.Z", armorStand.getLeftArmPose().getZ());
+        stringBuilder.append(armorStand.getRightLegPose().getX());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getRightLegPose().getY());
+        stringBuilder.append(";");
+        stringBuilder.append(armorStand.getRightLegPose().getZ());
 
-        configuration.set("position.rightarm.X", armorStand.getRightArmPose().getX());
-        configuration.set("position.rightarm.Y", armorStand.getRightArmPose().getY());
-        configuration.set("position.rightarm.Z", armorStand.getRightArmPose().getZ());
-
-        configuration.set("position.leftleg.X", armorStand.getLeftLegPose().getX());
-        configuration.set("position.leftleg.Y", armorStand.getLeftLegPose().getY());
-        configuration.set("position.leftleg.Z", armorStand.getLeftLegPose().getZ());
-
-        configuration.set("position.rightleg.X", armorStand.getRightLegPose().getX());
-        configuration.set("position.rightleg.Y", armorStand.getRightLegPose().getY());
-        configuration.set("position.rightleg.Z", armorStand.getRightLegPose().getZ());
-
-        try {
-            configuration.save(file);
-
-            templates.add(new ArmorStandTemplate(configuration));
-
-            return true;
-        } catch (IOException e) {
-            return false;
+        String data = Base64.getEncoder().encodeToString(stringBuilder.toString().getBytes());
+        mysql.query("INSERT INTO hyperstand(UUID, name, rawData, description) VALUES ('" + player.getUniqueId().toString() + "','" + name + "','" + data + "','" + description + "')");
+        if(!playerTemplates.containsKey(player.getUniqueId())) {
+            getTemplates(player);
         }
-
+        playerTemplates.get(player.getUniqueId()).add(new ArmorStandTemplate(name, stringBuilder.toString(), description));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true));
     }
 
 

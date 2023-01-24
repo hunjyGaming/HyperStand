@@ -7,29 +7,19 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class SaveSubCommand implements SubCommand {
+public class ArmorSubCommand implements SubCommand {
     @Override
     public void onCommand(Player player, String[] args) {
         Entity entity = player.getTargetEntity(5);
 
         if (entity != null) if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
-            if (args.length <= 2) {
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE", true));
+
+            if(HyperStand.getInstance().getArmorStandManager().trySelectArmorStand(player, armorStand)) {
                 return;
             }
 
-            String name = args[1];
-            String description = "";
-
-            for (int i = 2; i < args.length; i++) {
-                description += args[i] + " ";
-            }
-
-            description = description.substring(0, description.length() - 1);
-
-            HyperStand.getInstance().getTemplateManager().saveTemplate(player, name, description, armorStand);
-
+            HyperStand.getInstance().getInventoryHandler().openArmorMenu(player, armorStand);
             return;
         }
 
@@ -38,11 +28,11 @@ public class SaveSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "hyperstand.admin.save";
+        return "hyperstand.edit";
     }
 
     @Override
     public @NotNull String getAlias() {
-        return "save";
+        return "armor";
     }
 }

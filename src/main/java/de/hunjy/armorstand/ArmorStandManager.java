@@ -4,11 +4,12 @@ import de.hunjy.HyperStand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -22,6 +23,7 @@ public class ArmorStandManager {
 
     private final HashMap<UUID, ItemStack> itemCache = new HashMap<>();
     private final HashSet<GlowColor> glowColors = new HashSet<>();
+    private final NamespacedKey namespacedKey = new NamespacedKey("hyperstand", "owner");
 
     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
@@ -49,8 +51,7 @@ public class ArmorStandManager {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         for (GlowColor glowColor : glowColors) {
             Team team = scoreboard.getTeam(glowColor.getName());
-            if (team == null)
-                team = scoreboard.registerNewTeam(glowColor.getName());
+            if (team == null) team = scoreboard.registerNewTeam(glowColor.getName());
             team.setColor(glowColor.getColor());
         }
     }
@@ -103,8 +104,7 @@ public class ArmorStandManager {
             return true;
         }
 
-        if (player.hasPermission("hyperstand.admin.bypass"))
-            return false;
+        if (player.hasPermission("hyperstand.admin.bypass")) return false;
         if (!isEdibleArmorStand(armorStand)) {
             player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NOT_EDIBLE", true));
             return true;
@@ -116,20 +116,22 @@ public class ArmorStandManager {
         return false;
     }
 
+    public void createHyperStand(Player player, ArmorStand armorStand) {
+        armorStand.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, player.getUniqueId().toString());
+    }
+
     public boolean armorStandIsInUse(ArmorStand armorStand) {
         return selectedArmorStand.containsValue(armorStand);
     }
 
     public boolean isEdibleArmorStand(ArmorStand armorStand) {
-        return armorStand.hasMetadata("hyperstand_owner");
+        return armorStand.getPersistentDataContainer().has(namespacedKey);
     }
 
     public boolean canSelectArmorStand(Player player, ArmorStand armorStand) {
-        if (armorStand.hasMetadata("hyperstand_owner")) {
-            for (MetadataValue metadataValue : armorStand.getMetadata("hyperstand_owner")) {
-                if (metadataValue.asString().equals(player.getUniqueId().toString())) {
-                    return true;
-                }
+        if (armorStand.getPersistentDataContainer().has(namespacedKey)) {
+            if (armorStand.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING).equals(player.getUniqueId().toString())) {
+                return true;
             }
         }
         return player.hasPermission("hyperstand.admin.bypass");

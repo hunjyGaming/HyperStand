@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -75,15 +74,24 @@ public class InventoryEvent implements Listener {
 
         if (item.hasTag("HYPERSTAND_ACTION")) {
             String action = item.getString("HYPERSTAND_ACTION");
-            ArmorStand armorStand = null;
-            if(item.hasTag("ArmoStandID")) {
-                armorStand = (ArmorStand) Bukkit.getEntity(UUID.fromString(item.getString("ArmoStandID")));
+
+            if(action.equals("CANCLE")) {
+                player.closeInventory();
+                armorStandManager.returnHyperStandItemToPlayer(player);
+                return;
             }
+
+            if (!item.hasTag("ArmoStandID")) {
+                return;
+            }
+
+            ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(UUID.fromString(item.getString("ArmoStandID")));
+
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 5);
             switch (action) {
                 case "CREATE_HYPERSTAND": {
                     player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_CREATET", true));
-                    armorStand.setMetadata("hyperstand_owner", new FixedMetadataValue(HyperStand.getInstance(), player.getUniqueId().toString()));
+                    armorStandManager.createHyperStand(player, armorStand);
                     player.closeInventory();
                     break;
                 }
@@ -189,23 +197,23 @@ public class InventoryEvent implements Listener {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 5);
 
-            if(action.equals("OFF")) {
-                if(scoreboard.getEntityTeam(armorStand) != null) {
+            if (action.equals("OFF")) {
+                if (scoreboard.getEntityTeam(armorStand) != null) {
                     scoreboard.getEntityTeam(armorStand).removeEntity(armorStand);
                 }
                 armorStand.setGlowing(false);
                 inventoryHandler.openSettingsMenu(player, armorStand);
-            }else {
+            } else {
                 GlowColor glowColor = armorStandManager.getGlowColorByName(action);
                 armorStandManager.setGlowColor(armorStand, glowColor);
                 inventoryHandler.openSettingsMenu(player, armorStand);
             }
         }
-        if(item.hasTag("TEMPLATE_NAME")) {
+        if (item.hasTag("TEMPLATE_NAME")) {
             String name = item.getString("TEMPLATE_NAME");
             ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(UUID.fromString(item.getString("ArmoStandID")));
-            ArmorStandTemplate armorStandTemplate = HyperStand.getInstance().getTemplateManager().templateByName(name);
-            if(armorStandTemplate == null) {
+            ArmorStandTemplate armorStandTemplate = HyperStand.getInstance().getTemplateManager().templateByName(player, name);
+            if (armorStandTemplate == null) {
                 return;
             }
             player.closeInventory();
@@ -243,7 +251,7 @@ public class InventoryEvent implements Listener {
 
 
     private void updateArmorStandInventory(ArmorStand armorStand, Inventory inventory) {
-        if(armorStand.isDead() || armorStand == null) {
+        if (armorStand.isDead() || armorStand == null) {
             return;
         }
         new BukkitRunnable() {

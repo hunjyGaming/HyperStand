@@ -1,7 +1,6 @@
 package de.hunjy.visual.item;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -18,11 +17,6 @@ public class ItemBuilder {
     private Map<String, String> nbts = new HashMap();
     public ItemBuilder(Material material) {
         this.item = new ItemStack(material);
-        this.meta = item.getItemMeta();
-    }
-
-    public ItemBuilder(String headID) {
-        this.item = (new HeadDatabaseAPI()).getItemHead(headID);
         this.meta = item.getItemMeta();
     }
 

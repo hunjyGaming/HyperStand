@@ -7,7 +7,6 @@ authors: [ hunjy ]
 description: A ArmorStandToll for HyperKnox
 
 depend:
-  - NBTAPI
   - HeadDatabase
 
 commands:

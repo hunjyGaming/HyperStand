@@ -1,5 +1,6 @@
 package de.hunjy.armorstand;
 
+import de.hunjy.HyperStand;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -18,6 +19,12 @@ public enum ArmorStandEditType {
     BODY;
 
     public void modify(Player player, ArmorStand armorStand) {
+
+
+        if (player.isDead() || !player.isOnline()) {
+            HyperStand.getInstance().getArmorStandManager().finishEditing(player);
+            return;
+        }
 
         if (this == PICK_UP) {
             if (!player.isSneaking()) {
