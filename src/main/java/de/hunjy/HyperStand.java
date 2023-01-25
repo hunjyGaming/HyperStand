@@ -3,34 +3,40 @@ package de.hunjy;
 import de.hunjy.armorstand.ArmorStandManager;
 import de.hunjy.command.HyperStandCommand;
 import de.hunjy.command.subcommands.*;
-import de.hunjy.events.*;
+import de.hunjy.events.EditorEvents;
+import de.hunjy.events.InventoryEvent;
+import de.hunjy.events.PlayerInteractAtArmorStandEvent;
 import de.hunjy.logger.ILogger;
 import de.hunjy.messages.MessageManager;
-import de.hunjy.template.TemplateManager;
+import de.hunjy.mysql.MySQLConnection;
 import de.hunjy.visual.gui.InventoryHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.PreparedStatement;
+import java.util.UUID;
 
 public final class HyperStand extends JavaPlugin {
 
     private static HyperStand instance;
 
+    private MySQLConnection mySQLConnection;
+
     private MessageManager messageManager;
     private InventoryHandler inventoryHandler;
     private ArmorStandManager armorStandManager;
-    private TemplateManager templateManager;
 
     @Override
     public void onEnable() {
         instance = this;
-
         ILogger.log("Enabiling plugin....");
-
+        connectToMySQL();
         messageManager = new MessageManager();
         armorStandManager = new ArmorStandManager();
         inventoryHandler = new InventoryHandler();
-        templateManager = new TemplateManager();
 
         registerCommands();
         registerEvents();
@@ -39,7 +45,34 @@ public final class HyperStand extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        for (UUID uuid : armorStandManager.getSelectedArmorStand().keySet()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            player.closeInventory();
+            armorStandManager.finishEditing(player);
 
+        }
+
+        mySQLConnection.close();
+    }
+
+    private void connectToMySQL() {
+        this.getConfig().options().copyDefaults(true);
+        this.saveDefaultConfig();
+        FileConfiguration configuration = this.getConfig();
+        String host = configuration.getString("mysql.host");
+        String name = configuration.getString("mysql.name");
+        String password = configuration.getString("mysql.password");
+        String database = configuration.getString("mysql.database");
+
+        mySQLConnection = new MySQLConnection(host, name, password, database);
+        mySQLConnection.query("CREATE TABLE IF NOT EXISTS hyperstand (" +
+                " UUID VARCHAR(60) NOT NULL," +
+                " name VARCHAR(60) NOT NULL," +
+                " rawData LONGTEXT NOT NULL," +
+                " description VARCHAR(255) NOT NULL," +
+                " primary key (UUID, name)" +
+                ")");
     }
 
     // REGISTER ALL COMMANDS
@@ -52,6 +85,7 @@ public final class HyperStand extends JavaPlugin {
         HyperStandCommand.registerSubCommand(new NameSubCommand());
         HyperStandCommand.registerSubCommand(new ArmorSubCommand());
         HyperStandCommand.registerSubCommand(new CreateSubCommand());
+        HyperStandCommand.registerSubCommand(new RemoveSubCommand());
     }
 
     public void registerEvents() {
@@ -67,16 +101,16 @@ public final class HyperStand extends JavaPlugin {
         return instance;
     }
 
+    public MySQLConnection getMySQLConnection() {
+        return mySQLConnection;
+    }
+
     public MessageManager getMessageManager() {
         return messageManager;
     }
 
     public ArmorStandManager getArmorStandManager() {
         return armorStandManager;
-    }
-
-    public TemplateManager getTemplateManager() {
-        return templateManager;
     }
 
     public InventoryHandler getInventoryHandler() {

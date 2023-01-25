@@ -6,8 +6,5 @@ prefix: HyperStand
 authors: [ hunjy ]
 description: A ArmorStandToll for HyperKnox
 
-depend:
-  - HeadDatabase
-
 commands:
   hyperstand:

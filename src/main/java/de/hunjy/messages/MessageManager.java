@@ -24,6 +24,11 @@ public class MessageManager {
         messages.put("HYPERSTAND_NO_ACCESS", "§cDu kannst den ArmorStand nicht bearbeiten!");
         messages.put("HYPERSTAND_ALLRADY_EXIST", "§cDas ist bereits ein HyperStand");
         messages.put("HYPERSTAND_CREATET", "§aDu hast den HyperStand erstellt!");
+
+        messages.put("TEMPLATE_DELETE_COMPLETE", "§aDie Position wurde gelöscht!");
+        messages.put("TEMPLATE_DELETE_ERROR", "§cDie Position konnte nicht gelöscht werden!");
+        messages.put("TEMPLATE_DELETE_NOT_EXIST", "§cEs wurde keine Position mit dem Namen gefunden!");
+
         messages.put("create_template", "§7Die Position wird gespeichert...");
         messages.put("create_template_success", "§aDie Position wurde erfolgreich gespeichert!");
     }

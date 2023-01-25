@@ -2,7 +2,9 @@ package de.hunjy.visual.gui;
 
 import de.hunjy.HyperStand;
 import de.hunjy.armorstand.ArmorStandManager;
+import de.hunjy.mysql.ArmorstandQueryListener;
 import de.hunjy.template.ArmorStandTemplate;
+import de.hunjy.template.PlayerTemplate;
 import de.hunjy.utils.Colorizer;
 import de.hunjy.visual.item.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -13,6 +15,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class InventoryHandler {
 
@@ -139,7 +143,9 @@ public class InventoryHandler {
         inventory.setItem(21, new ItemBuilder(Material.LEATHER_CHESTPLATE).setDisplayName("§eKörper bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_BODY").build());
         inventory.setItem(22, new ItemBuilder(Material.STICK).setDisplayName("§eLinken Arm bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LARM").build());
 
-        inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
+
+         inventory.setItem(24, new ItemBuilder(Material.GHAST_TEAR).setDisplayName("§7Lade Templates...").removeAllAttributes().build());
+
 
         inventory.setItem(29, new ItemBuilder(Material.STICK).setDisplayName("§eRechtes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RLEG").build());
         inventory.setItem(30, new ItemBuilder(Material.COMPASS).setDisplayName("§eAufheben").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_PICKUP").build());
@@ -148,6 +154,25 @@ public class InventoryHandler {
         inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
+
+        PlayerTemplate.get(player, new ArmorstandQueryListener() {
+            @Override
+            public void onQueryResult(List<ArmorStandTemplate> templates) {
+                Bukkit.getScheduler().runTask(HyperStand.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").addLore("", "§7Du hast §e" + templates.size() + " §7Templates!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
+                    }
+                });
+            }
+
+            @Override
+            public void onQueryError(Exception exception) {
+                exception.printStackTrace();
+
+            }
+        });
+
     }
 
     public void openTemplateMenu(Player player, ArmorStand armorStand) {
@@ -155,18 +180,40 @@ public class InventoryHandler {
 
         fillBackground(inventory, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName("§7").removeAllAttributes().build());
 
-        for (int row = 0; row < 4; row++) {
-            for (int i = 10; i < 17; i++) {
-                inventory.setItem((i + (row * 9)), new ItemStack(Material.AIR));
-            }
-        }
-
-        for (ArmorStandTemplate template : HyperStand.getInstance().getTemplateManager().getTemplates(player)) {
-            inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + template.getName()).addLore("", "§7" + template.getDescription()).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("TEMPLATE_NAME", template.getName()).build());
-        }
+        inventory.setItem(13, new ItemBuilder(Material.GHAST_TEAR).setDisplayName("§7Lade Templates...").removeAllAttributes().build());
 
         inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
+
         player.openInventory(inventory);
+        HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
+
+        PlayerTemplate.get(player, new ArmorstandQueryListener() {
+            @Override
+            public void onQueryResult(List<ArmorStandTemplate> templates) {
+                Bukkit.getScheduler().runTask(HyperStand.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+
+                        for (int row = 0; row < 4; row++) {
+                            for (int i = 10; i < 17; i++) {
+                                inventory.setItem((i + (row * 9)), new ItemStack(Material.AIR));
+                            }
+                        }
+                        for (ArmorStandTemplate template : templates) {
+                            inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + template.getName()).addLore("", "§7" + template.getDescription()).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("TEMPLATE_NAME", template.getName()).build());
+                        }
+
+                    }
+                });
+            }
+
+            @Override
+            public void onQueryError(Exception exception) {
+                exception.printStackTrace();
+
+            }
+        });
+
     }
 
     public void openCreateMenu(Player player, ArmorStand armorStand) {

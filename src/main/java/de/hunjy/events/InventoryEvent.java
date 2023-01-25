@@ -4,7 +4,9 @@ import de.hunjy.HyperStand;
 import de.hunjy.armorstand.ArmorStandEditType;
 import de.hunjy.armorstand.ArmorStandManager;
 import de.hunjy.armorstand.GlowColor;
+import de.hunjy.mysql.ArmorstandQueryListener;
 import de.hunjy.template.ArmorStandTemplate;
+import de.hunjy.template.PlayerTemplate;
 import de.hunjy.visual.gui.InventoryHandler;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 public class InventoryEvent implements Listener {
@@ -75,7 +78,7 @@ public class InventoryEvent implements Listener {
         if (item.hasTag("HYPERSTAND_ACTION")) {
             String action = item.getString("HYPERSTAND_ACTION");
 
-            if(action.equals("CANCLE")) {
+            if (action.equals("CANCLE")) {
                 player.closeInventory();
                 armorStandManager.returnHyperStandItemToPlayer(player);
                 return;
@@ -212,12 +215,31 @@ public class InventoryEvent implements Listener {
         if (item.hasTag("TEMPLATE_NAME")) {
             String name = item.getString("TEMPLATE_NAME");
             ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(UUID.fromString(item.getString("ArmoStandID")));
-            ArmorStandTemplate armorStandTemplate = HyperStand.getInstance().getTemplateManager().templateByName(player, name);
-            if (armorStandTemplate == null) {
-                return;
-            }
-            player.closeInventory();
-            armorStandTemplate.assignToArmorStand(armorStand);
+
+
+            PlayerTemplate.get(player, new ArmorstandQueryListener() {
+                @Override
+                public void onQueryResult(List<ArmorStandTemplate> templates) {
+                    Bukkit.getScheduler().runTask(HyperStand.getInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            for (ArmorStandTemplate template : templates) {
+                                if (template.getName().equals(name)) {
+                                    player.closeInventory();
+                                    template.assignToArmorStand(armorStand);
+                                    return;
+                                }
+                            }
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onQueryError(Exception exception) {
+                    onQueryError(exception);
+                }
+            });
         }
     }
 

@@ -2,6 +2,7 @@ package de.hunjy.command.subcommands;
 
 import de.hunjy.HyperStand;
 import de.hunjy.command.SubCommand;
+import de.hunjy.template.PlayerTemplate;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class SaveSubCommand implements SubCommand {
 
         if (entity != null) if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
-            if (args.length <= 2) {
+            if (args.length <= 1) {
                 player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE", true));
                 return;
             }
@@ -22,13 +23,15 @@ public class SaveSubCommand implements SubCommand {
             String name = args[1];
             String description = "";
 
-            for (int i = 2; i < args.length; i++) {
-                description += args[i] + " ";
+            if (args.length >= 3) {
+                for (int i = 2; i < args.length; i++) {
+                    description += args[i] + " ";
+                }
+
+                description = description.substring(0, description.length() - 1);
             }
 
-            description = description.substring(0, description.length() - 1);
-
-            HyperStand.getInstance().getTemplateManager().saveTemplate(player, name, description, armorStand);
+            PlayerTemplate.saveTemplate(player, name, description, armorStand);
 
             return;
         }

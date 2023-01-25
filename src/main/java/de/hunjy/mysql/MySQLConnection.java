@@ -1,13 +1,13 @@
 package de.hunjy.mysql;
 
 import de.hunjy.logger.ILogger;
+import de.hunjy.template.ArmorStandTemplate;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MySQLConnection {
     private final ExecutorService service = Executors.newFixedThreadPool(1);
@@ -36,6 +36,12 @@ public class MySQLConnection {
     }
 
     public void close() {
+        try {
+            this.service.shutdown();
+            this.service.awaitTermination(30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (this.isConnected()) {
             try {
                 this.con.close();
@@ -52,6 +58,22 @@ public class MySQLConnection {
         return this.con != null;
     }
 
+    public void query(PreparedStatement qry) {
+        this.service.execute(() -> {
+            if (!this.isConnected()) {
+                this.connect();
+            }
+
+            if (this.isConnected()) {
+                try {
+                    qry.executeUpdate();
+                } catch (SQLException var3) {
+                    var3.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void query(String qry) {
         this.service.execute(() -> {
             if (!this.isConnected()) {
@@ -60,10 +82,37 @@ public class MySQLConnection {
 
             if (this.isConnected()) {
                 try {
-                    this.con.createStatement().executeUpdate(qry);
+                    PreparedStatement preparedStatement = con.prepareStatement(qry);
+                    preparedStatement.executeUpdate();
                 } catch (SQLException var3) {
                     var3.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public void loadTemplatesFromDatabase(UUID playerUuid, ArmorstandQueryListener queryListener) {
+        Objects.requireNonNull(playerUuid);
+        Objects.requireNonNull(queryListener);
+        this.service.execute(() -> {
+            if (this.isConnected()) {
+                List<ArmorStandTemplate> templates = new ArrayList<>();
+                try (PreparedStatement stmt = this.con.prepareStatement("SELECT * FROM hyperstand WHERE UUID=?")) {
+                    stmt.setString(1, playerUuid.toString());
+                    try (ResultSet set = stmt.executeQuery()) {
+                        while (set.next()) {
+                            templates.add(new ArmorStandTemplate(
+                                    set.getString("name"),
+                                    new String(Base64.getDecoder().decode(set.getString("rawData").getBytes())),
+                                    set.getString("description")
+                            ));
+                        }
+                    }
+                } catch (SQLException var3) {
+                    queryListener.onQueryError(var3);
+                    return;
+                }
+                queryListener.onQueryResult(templates);
             }
         });
     }

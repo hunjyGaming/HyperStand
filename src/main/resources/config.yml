@@ -1,0 +1,5 @@
+mysql:
+  host: "localhost"
+  name: "hyper"
+  password: "bXkn868bWDaLXJ3m"
+  database: "hyper"

@@ -15,6 +15,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 public class ArmorStandManager {
@@ -77,6 +78,10 @@ public class ArmorStandManager {
     public void setGlowColor(ArmorStand armorStand, GlowColor glowColor) {
         scoreboard.getTeam(glowColor.getName()).addEntity(armorStand);
         armorStand.setGlowing(true);
+    }
+
+    public HashMap<UUID, ArmorStand> getSelectedArmorStand() {
+        return selectedArmorStand;
     }
 
     public void toggleArmorStandEquipmentLock(ArmorStand armorStand) {

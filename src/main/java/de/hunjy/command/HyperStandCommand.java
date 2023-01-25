@@ -1,6 +1,9 @@
 package de.hunjy.command;
 
 import de.hunjy.HyperStand;
+import de.hunjy.mysql.ArmorstandQueryListener;
+import de.hunjy.template.ArmorStandTemplate;
+import de.hunjy.template.PlayerTemplate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -58,14 +61,32 @@ public class HyperStandCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         List<String> list = new ArrayList<>();
-        if(command.getName().equalsIgnoreCase("hyperstand") && args.length >= 0){
-            if(sender instanceof Player){
+        if (command.getName().equalsIgnoreCase("hyperstand") && args.length >= 0) {
+            if (sender instanceof Player) {
                 Player player = (Player) sender;
 
-                for(String cmd : commands.keySet()) {
-                    if(player.hasPermission(commands.get(cmd).getPermission())) {
-                        list.add(cmd);
+                if (args.length == 1) {
+                    for (String cmd : commands.keySet()) {
+                        if (player.hasPermission(commands.get(cmd).getPermission())) {
+                            list.add(cmd);
+                        }
                     }
+                }
+
+                if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+                    PlayerTemplate.get(player, new ArmorstandQueryListener() {
+                        @Override
+                        public void onQueryResult(List<ArmorStandTemplate> templates) {
+                            for(ArmorStandTemplate template : templates) {
+                                list.add(template.getName());
+                            }
+                        }
+
+                        @Override
+                        public void onQueryError(Exception exception) {
+                            onQueryError(exception);
+                        }
+                    });
                 }
 
             }
