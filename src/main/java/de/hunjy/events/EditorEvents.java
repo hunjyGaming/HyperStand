@@ -129,14 +129,4 @@ public class EditorEvents implements Listener {
         }
     }
 
-    @EventHandler
-    public void onTakeDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof ArmorStand)) return;
-        ArmorStand armorStand = (ArmorStand) event.getEntity();
-        if (armorStandManager.armorStandIsInUse(armorStand)) {
-            event.setCancelled(true);
-        }
-    }
-
-
 }
