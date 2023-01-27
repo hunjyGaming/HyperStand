@@ -116,22 +116,6 @@ public class MySQLConnection {
         });
     }
 
-    private ResultSet getResult(String qry) {
-        if (!this.isConnected()) {
-            this.connect();
-        }
-
-        if (this.isConnected()) {
-            try {
-                return this.con.createStatement().executeQuery(qry);
-            } catch (SQLException var3) {
-                var3.printStackTrace();
-            }
-        }
-
-        return null;
-    }
-
     public Connection getCon() {
         return this.con;
     }
