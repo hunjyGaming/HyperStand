@@ -81,10 +81,8 @@ public class MySQLConnection {
             }
 
             if (this.isConnected()) {
-                try {
-                    PreparedStatement preparedStatement = con.prepareStatement(qry);
+                try (PreparedStatement preparedStatement  = con.prepareStatement(qry)){
                     preparedStatement.executeUpdate();
-                    preparedStatement.close();
                 } catch (SQLException var3) {
                     var3.printStackTrace();
                 }
