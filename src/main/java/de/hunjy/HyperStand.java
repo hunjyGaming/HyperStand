@@ -49,8 +49,7 @@ public final class HyperStand extends JavaPlugin {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             player.closeInventory();
-            armorStandManager.finishEditing(player);
-
+            armorStandManager.returnArmorStand(player);
         }
 
         mySQLConnection.close();

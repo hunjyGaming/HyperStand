@@ -13,7 +13,7 @@ public class HelpSubCommand implements SubCommand {
 
         for (SubCommand subCommand : HyperStandCommand.getCommands().values()) {
             if (player.hasPermission(subCommand.getPermission())) {
-                player.sendMessage("§7- /hyperstand " + subCommand.getAlias() + ((subCommand.getDescription() != null) ? " | " + subCommand.getDescription() : ""));
+                player.sendMessage("§7- §c/hyperstand " + subCommand.getAlias() + ((subCommand.getDescription() != null) ? " §7| " + subCommand.getDescription() : ""));
             }
         }
 
