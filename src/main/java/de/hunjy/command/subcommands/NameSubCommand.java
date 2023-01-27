@@ -50,7 +50,7 @@ public class NameSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "hyperstand.name";
+        return "hyperstand.edit";
     }
 
     @Override

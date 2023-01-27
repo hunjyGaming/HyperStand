@@ -22,7 +22,7 @@ public class RemoveSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "hyperstand.remove";
+        return "hyperstand.template";
     }
 
     @Override

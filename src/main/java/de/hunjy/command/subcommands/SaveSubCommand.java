@@ -41,7 +41,7 @@ public class SaveSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "hyperstand.admin.save";
+        return "hyperstand.template";
     }
 
     @Override
