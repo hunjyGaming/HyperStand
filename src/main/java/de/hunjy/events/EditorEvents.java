@@ -28,11 +28,6 @@ public class EditorEvents implements Listener {
             ArmorStandEditType armorStandEditType = armorStandManager.getCurrentEditType(player);
             armorStandEditType.modify(player, armorStand);
         }
-        /*
-        if (armorStandManager.isPickedUp(player)) {
-            ArmorStand armorStand = armorStandManager.getPickedUpArmorStand(player);
-            armorStand.teleport(armorStandManager.getLocationFacing(player.getLocation()));
-        }*/
     }
 
     @EventHandler
@@ -47,10 +42,13 @@ public class EditorEvents implements Listener {
         Player player = event.getPlayer();
 
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-
             if (armorStandManager.isEditing(player)) {
-                event.setCancelled(true);
-                armorStandManager.finishEditing(player);
+                if (!event.isCancelled()) {
+                    event.setCancelled(true);
+                    armorStandManager.finishEditing(player);
+                } else {
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("CANT_PLACE_HERE"));
+                }
             }
         }
     }
@@ -59,7 +57,7 @@ public class EditorEvents implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (armorStandManager.isEditing(player)) {
-            armorStandManager.finishEditing(player);
+            armorStandManager.returnArmorStand(player);
         }
     }
 
@@ -67,7 +65,7 @@ public class EditorEvents implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
         if (armorStandManager.isEditing(player)) {
-            armorStandManager.finishEditing(player);
+            armorStandManager.returnArmorStand(player);
         }
     }
 
@@ -87,8 +85,12 @@ public class EditorEvents implements Listener {
             if (armorStandManager.hasSelectedArmorStand(player)) {
                 if (armorStandManager.getSelectedArmorStand(player) == armorStand) {
                     if (armorStandManager.isEditing(player)) {
-                        event.setCancelled(true);
-                        armorStandManager.finishEditing(player);
+                        if (!event.isCancelled()) {
+                            event.setCancelled(true);
+                            armorStandManager.finishEditing(player);
+                        } else {
+                            player.sendMessage(HyperStand.getInstance().getMessageManager().get("CANT_PLACE_HERE"));
+                        }
                     }
                     return;
                 }

@@ -1,10 +1,7 @@
 package de.hunjy.armorstand;
 
 import de.hunjy.HyperStand;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,12 +12,12 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 public class ArmorStandManager {
     private final HashMap<UUID, ArmorStandEditType> activeEditType = new HashMap<>();
     private final HashMap<UUID, ArmorStand> selectedArmorStand = new HashMap<>();
+    private final HashMap<UUID, Location> locationCache = new HashMap<>();
 
     private final HashMap<UUID, ItemStack> itemCache = new HashMap<>();
     private final HashSet<GlowColor> glowColors = new HashSet<>();
@@ -158,6 +155,7 @@ public class ArmorStandManager {
     }
 
     public void setSelectedArmorStand(Player player, ArmorStand armorStand) {
+        locationCache.put(player.getUniqueId(), armorStand.getLocation());
         selectedArmorStand.put(player.getUniqueId(), armorStand);
     }
 
@@ -200,5 +198,12 @@ public class ArmorStandManager {
         if (itemCache.containsKey(player.getUniqueId())) {
             player.getInventory().addItem(itemCache.get(player.getUniqueId()));
         }
+    }
+
+    public void returnArmorStand(Player player) {
+        ArmorStand armorStand = getSelectedArmorStand(player);
+        Location location = locationCache.get(player.getUniqueId());
+        armorStand.teleport(location);
+        finishEditing(player);
     }
 }

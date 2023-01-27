@@ -66,7 +66,7 @@ public class InventoryHandler {
         inventory.setItem(13, new ItemBuilder(Material.LEATHER_BOOTS).setDisplayName("§7Schuhe").removeAllAttributes().build());
 
         inventory.setItem(15, new ItemBuilder(Material.STICK).setDisplayName("§7Rechter Arm").removeAllAttributes().build());
-        inventory.setItem(16, new ItemBuilder(Material.STICK).setDisplayName("§7Lincker Arm").removeAllAttributes().build());
+        inventory.setItem(16, new ItemBuilder(Material.STICK).setDisplayName("§7Linker Arm").removeAllAttributes().build());
 
         // CURRENT CONTENTS
         inventory.setItem(19, armorStand.getItem(EquipmentSlot.HEAD));
