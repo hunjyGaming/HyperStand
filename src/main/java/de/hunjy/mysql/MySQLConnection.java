@@ -84,6 +84,7 @@ public class MySQLConnection {
                 try {
                     PreparedStatement preparedStatement = con.prepareStatement(qry);
                     preparedStatement.executeUpdate();
+                    preparedStatement.close();
                 } catch (SQLException var3) {
                     var3.printStackTrace();
                 }
