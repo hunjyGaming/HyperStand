@@ -108,6 +108,11 @@ public class EditorEvents implements Listener {
         if (armorStandManager.isEditing(player)) {
             if (player.isSneaking()) {
                 ArmorStand armorStand = armorStandManager.getSelectedArmorStand(player);
+
+                if (armorStand.hasGravity()) {
+                    armorStand.setGlowing(false);
+                }
+
                 Location location = armorStand.getLocation().clone();
                 if (event.getNewSlot() < event.getPreviousSlot()) {
                     location.add(0, 0.1, 0);
