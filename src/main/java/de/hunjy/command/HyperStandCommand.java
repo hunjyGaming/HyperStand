@@ -53,6 +53,10 @@ public class HyperStandCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    public static Map<String, SubCommand> getCommands() {
+        return commands;
+    }
+
     public static void registerSubCommand(SubCommand subCommand) {
         commands.put(subCommand.getAlias(), subCommand);
     }

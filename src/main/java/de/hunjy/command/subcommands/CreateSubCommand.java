@@ -28,6 +28,10 @@ public class CreateSubCommand implements SubCommand {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+    @Override
     public String getPermission() {
         return "hyperstand.admin.create";
     }

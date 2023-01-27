@@ -45,6 +45,10 @@ public class SaveSubCommand implements SubCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Speichere eine Position um diese immer weider benutzen zu können";
+    }
+    @Override
     public @NotNull String getAlias() {
         return "save";
     }

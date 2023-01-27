@@ -19,6 +19,10 @@ public class RemoveSubCommand implements SubCommand {
         PlayerTemplate.remove(player, name);
     }
 
+    @Override
+    public String getDescription() {
+        return "Lösche eine gespeicherte Position";
+    }
 
     @Override
     public String getPermission() {

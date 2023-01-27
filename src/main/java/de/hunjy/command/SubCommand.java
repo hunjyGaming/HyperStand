@@ -11,4 +11,6 @@ public interface SubCommand {
 
     @NotNull
     String getAlias();
+
+    String getDescription();
 }

@@ -49,6 +49,10 @@ public class NameSubCommand implements SubCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Gebe deinem HyperStand einen Namen";
+    }
+    @Override
     public String getPermission() {
         return "hyperstand.edit";
     }

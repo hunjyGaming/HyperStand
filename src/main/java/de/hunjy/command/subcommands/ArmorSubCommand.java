@@ -27,6 +27,10 @@ public class ArmorSubCommand implements SubCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Bearbeite die Rüstungdes HyperStand";
+    }
+    @Override
     public String getPermission() {
         return "hyperstand.edit";
     }

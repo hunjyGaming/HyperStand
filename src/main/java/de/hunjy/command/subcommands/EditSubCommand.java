@@ -27,6 +27,10 @@ public class EditSubCommand implements SubCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Öffne das Bearbeitungs-Menü";
+    }
+    @Override
     public String getPermission() {
         return "hyperstand.edit";
     }
