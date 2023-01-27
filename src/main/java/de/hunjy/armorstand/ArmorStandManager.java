@@ -176,6 +176,7 @@ public class ArmorStandManager {
     public void finishEditing(Player player) {
         removeSelectedArmorStand(player);
         activeEditType.remove(player.getUniqueId());
+        locationCache.remove(player.getUniqueId());
     }
 
     public void pickUpArmorStand(Player player, ArmorStand armorStand) {
