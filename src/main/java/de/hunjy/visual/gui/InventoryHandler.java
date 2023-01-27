@@ -143,10 +143,6 @@ public class InventoryHandler {
         inventory.setItem(21, new ItemBuilder(Material.LEATHER_CHESTPLATE).setDisplayName("§eKörper bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_BODY").build());
         inventory.setItem(22, new ItemBuilder(Material.STICK).setDisplayName("§eLinken Arm bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LARM").build());
 
-
-         inventory.setItem(24, new ItemBuilder(Material.GHAST_TEAR).setDisplayName("§7Lade Templates...").removeAllAttributes().build());
-
-
         inventory.setItem(29, new ItemBuilder(Material.STICK).setDisplayName("§eRechtes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RLEG").build());
         inventory.setItem(30, new ItemBuilder(Material.COMPASS).setDisplayName("§eAufheben").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_PICKUP").build());
         inventory.setItem(31, new ItemBuilder(Material.STICK).setDisplayName("§eLinkes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LLEG").build());
@@ -155,23 +151,29 @@ public class InventoryHandler {
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
 
-        PlayerTemplate.get(player, new ArmorstandQueryListener() {
-            @Override
-            public void onQueryResult(List<ArmorStandTemplate> templates) {
-                Bukkit.getScheduler().runTask(HyperStand.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").addLore("", "§7Du hast §e" + templates.size() + " §7Templates!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
-                    }
-                });
-            }
+        if(HyperStand.getInstance().getMySQLConnection().isConnected()) {
+            inventory.setItem(24, new ItemBuilder(Material.GHAST_TEAR).setDisplayName("§7Lade Templates...").removeAllAttributes().build());
+            PlayerTemplate.get(player, new ArmorstandQueryListener() {
+                @Override
+                public void onQueryResult(List<ArmorStandTemplate> templates) {
+                    Bukkit.getScheduler().runTask(HyperStand.getInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            inventory.setItem(24, new ItemBuilder(Material.PAPER).setDisplayName("§eVorgeferitgte Position aussuchen.").addLore("", "§7Du hast §e" + templates.size() + " §7Templates!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_TEMPLATE").build());
+                        }
+                    });
+                }
 
-            @Override
-            public void onQueryError(Exception exception) {
-                exception.printStackTrace();
+                @Override
+                public void onQueryError(Exception exception) {
+                    exception.printStackTrace();
 
-            }
-        });
+                }
+            });
+        }else {
+
+        }
+
 
     }
 

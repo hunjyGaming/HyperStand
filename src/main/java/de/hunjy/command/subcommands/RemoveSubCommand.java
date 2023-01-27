@@ -9,6 +9,12 @@ import org.jetbrains.annotations.NotNull;
 public class RemoveSubCommand implements SubCommand {
     @Override
     public void onCommand(Player player, String[] args) {
+
+        if (!HyperStand.getInstance().getMySQLConnection().isConnected()) {
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR"));
+            return;
+        }
+
         if (args.length != 2) {
             player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE", true));
             return;

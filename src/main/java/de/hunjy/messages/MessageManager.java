@@ -32,6 +32,7 @@ public class MessageManager {
         messages.put("create_template", "§7Die Position wird gespeichert...");
         messages.put("create_template_success", "§aDie Position wurde erfolgreich gespeichert!");
         messages.put("CANT_PLACE_HERE", "§cDu kannst den HyperStand hier nicht platzieren!");
+        messages.put("MYSQL_ERROR", "§cLeider ist ein Fehler aufgetreten.!");
     }
 
     public String get(String key) {

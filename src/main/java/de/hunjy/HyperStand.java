@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.PreparedStatement;
 import java.util.UUID;
 
 public final class HyperStand extends JavaPlugin {
@@ -65,13 +64,19 @@ public final class HyperStand extends JavaPlugin {
         String database = configuration.getString("mysql.database");
 
         mySQLConnection = new MySQLConnection(host, name, password, database);
-        mySQLConnection.query("CREATE TABLE IF NOT EXISTS hyperstand (" +
-                " UUID VARCHAR(60) NOT NULL," +
-                " name VARCHAR(60) NOT NULL," +
-                " rawData LONGTEXT NOT NULL," +
-                " description VARCHAR(255) NOT NULL," +
-                " primary key (UUID, name)" +
-                ")");
+
+        if (mySQLConnection.isConnected()) {
+            mySQLConnection.query("CREATE TABLE IF NOT EXISTS hyperstand (" +
+                    " UUID VARCHAR(60) NOT NULL," +
+                    " name VARCHAR(60) NOT NULL," +
+                    " rawData LONGTEXT NOT NULL," +
+                    " description VARCHAR(255) NOT NULL," +
+                    " primary key (UUID, name)" +
+                    ")");
+        }else {
+            ILogger.log("Es konnte keine verbindung zur Datenbank erstellt werden.");
+        }
+
     }
 
     // REGISTER ALL COMMANDS

@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
 public class SaveSubCommand implements SubCommand {
     @Override
     public void onCommand(Player player, String[] args) {
+        if(!HyperStand.getInstance().getMySQLConnection().isConnected()) {
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR"));
+            return;
+        }
+
         Entity entity = player.getTargetEntity(5);
 
         if (entity != null) if (entity instanceof ArmorStand) {
