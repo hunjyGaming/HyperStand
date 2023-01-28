@@ -11,6 +11,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -33,7 +34,7 @@ public class EditorEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onArmoStandManipulate(PlayerArmorStandManipulateEvent event) {
         if (armorStandManager.armorStandIsInUse(event.getRightClicked())) {
             event.setCancelled(true);
@@ -56,7 +57,7 @@ public class EditorEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getItem() == null) return;
@@ -72,7 +73,7 @@ public class EditorEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamgardByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof ArmorStand)) return;
 
