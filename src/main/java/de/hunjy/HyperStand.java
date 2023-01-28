@@ -71,9 +71,9 @@ public final class HyperStand extends JavaPlugin {
                     " name VARCHAR(60) NOT NULL," +
                     " rawData LONGTEXT NOT NULL," +
                     " description VARCHAR(255) NOT NULL," +
-                    " primary key (UUID, name)" +
+                    " CREATE_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                     ")");
-        }else {
+        } else {
             ILogger.log("Es konnte keine verbindung zur Datenbank erstellt werden.");
         }
 

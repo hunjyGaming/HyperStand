@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.EulerAngle;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class ArmorStandManager {
     private final HashMap<UUID, ArmorStandEditType> activeEditType = new HashMap<>();
     private final HashMap<UUID, ArmorStand> selectedArmorStand = new HashMap<>();
+    private final HashSet<ArmorStand> selectedArmorStandCache = new HashSet<>();
     private final HashMap<UUID, Location> locationCache = new HashMap<>();
 
     private final HashMap<UUID, ItemStack> itemCache = new HashMap<>();
@@ -151,6 +153,11 @@ public class ArmorStandManager {
     }
 
     public void removeSelectedArmorStand(Player player) {
+        ArmorStand armorStand = selectedArmorStand.get(player.getUniqueId());
+        if(selectedArmorStandCache.contains(armorStand)) {
+            armorStand.setVisible(false);
+            selectedArmorStandCache.remove(armorStand);
+        }
         selectedArmorStand.remove(player.getUniqueId());
     }
 
@@ -171,17 +178,30 @@ public class ArmorStandManager {
         setSelectedArmorStand(player, armorStand);
         player.getInventory().setHeldItemSlot(4);
         activeEditType.put(player.getUniqueId(), armorStandEditType);
+        armorStandEditType.sendTitle(player);
+    }
+
+    public void setEditingType(Player player, ArmorStandEditType armorStandEditType) {
+        activeEditType.put(player.getUniqueId(), armorStandEditType);
     }
 
     public void finishEditing(Player player) {
         removeSelectedArmorStand(player);
         activeEditType.remove(player.getUniqueId());
         locationCache.remove(player.getUniqueId());
+
+        player.resetTitle();
+        player.sendTitle("", "§aFertig", 0, 20, 0);
     }
 
     public void pickUpArmorStand(Player player, ArmorStand armorStand) {
+
         selectedArmorStand.put(player.getUniqueId(), armorStand);
-        activeEditType.put(player.getUniqueId(), ArmorStandEditType.PICK_UP);
+        activeEditType.put(player.getUniqueId(), ArmorStandEditType.MOVE);
+        if (!armorStand.isVisible()) {
+            selectedArmorStandCache.add(armorStand);
+        }
+        armorStand.setVisible(true);
         player.sendTitle("§eArmorStand aufgehoben", "§7Rechtsklick um wieder loszulassen", 5, 60, 5);
     }
 
@@ -206,5 +226,61 @@ public class ArmorStandManager {
         Location location = locationCache.get(player.getUniqueId());
         armorStand.teleport(location);
         finishEditing(player);
+    }
+
+    public void resetToDefault(ArmorStandEditType armorStandEditType, ArmorStand armorStand) {
+
+        EulerAngle eulerAngle = switch (armorStandEditType) {
+            case HEAD -> armorStand.getHeadPose();
+            case BODY -> armorStand.getBodyPose();
+            case LARM -> armorStand.getLeftArmPose();
+            case RARM -> armorStand.getRightArmPose();
+            case LLEG -> armorStand.getLeftLegPose();
+            case RLEG -> armorStand.getRightLegPose();
+            default -> null;
+        };
+        if (eulerAngle == null) return;
+
+        switch (armorStandEditType) {
+            case HEAD -> {
+                eulerAngle = eulerAngle.setX(0.06998746565074046);
+                eulerAngle = eulerAngle.setY(0.026100776316512336);
+                eulerAngle = eulerAngle.setZ(0.0);
+            }
+            case BODY -> {
+                eulerAngle = eulerAngle.setX(0.0);
+                eulerAngle = eulerAngle.setY(-0.0391104264324687);
+                eulerAngle = eulerAngle.setZ(0.0);
+            }
+            case LARM -> {
+                eulerAngle = eulerAngle.setX(-0.17453292519943295);
+                eulerAngle = eulerAngle.setY(0.0);
+                eulerAngle = eulerAngle.setZ(-0.17453292519943295);
+            }
+            case RARM -> {
+                eulerAngle = eulerAngle.setX(-0.2617993877991494);
+                eulerAngle = eulerAngle.setY(0.0);
+                eulerAngle = eulerAngle.setZ(0.17453292519943295);
+            }
+            case LLEG -> {
+                eulerAngle = eulerAngle.setX(-0.017453292519943295);
+                eulerAngle = eulerAngle.setY(0.0);
+                eulerAngle = eulerAngle.setZ(-0.017453292519943295);
+            }
+            case RLEG -> {
+                eulerAngle = eulerAngle.setX(0.017453292519943295);
+                eulerAngle = eulerAngle.setY(0.0);
+                eulerAngle = eulerAngle.setZ(0.017453292519943295);
+            }
+        }
+
+        switch (armorStandEditType) {
+            case HEAD -> armorStand.setHeadPose(eulerAngle);
+            case BODY -> armorStand.setBodyPose(eulerAngle);
+            case LARM -> armorStand.setLeftArmPose(eulerAngle);
+            case RARM -> armorStand.setRightArmPose(eulerAngle);
+            case LLEG -> armorStand.setLeftLegPose(eulerAngle);
+            case RLEG -> armorStand.setRightLegPose(eulerAngle);
+        }
     }
 }

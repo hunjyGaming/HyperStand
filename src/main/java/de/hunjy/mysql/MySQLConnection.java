@@ -29,8 +29,9 @@ public class MySQLConnection {
         if (!this.isConnected()) {
             try {
                 this.con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":3306/" + this.database + "?autoReconnect=true", this.name, this.password);
+                ILogger.log("[MySQL] Verbindung zur MySQL hergestellt!");
             } catch (SQLException e) {
-                e.printStackTrace();
+                ILogger.warning("[MySQL] §4Fehler: §c" + e.getMessage());
             }
         }
 
@@ -49,7 +50,7 @@ public class MySQLConnection {
                 ILogger.log("[MySQL] Verbindung zur MySQL beendet!");
             } catch (SQLException var2) {
                 var2.printStackTrace();
-                ILogger.log("[MySQL] §4Fehler: §c" + var2.getMessage());
+                ILogger.warning("[MySQL] §4Fehler: §c" + var2.getMessage());
             }
         }
 
@@ -68,6 +69,7 @@ public class MySQLConnection {
             if (this.isConnected()) {
                 try {
                     qry.executeUpdate();
+                    qry.close();
                 } catch (SQLException var3) {
                     var3.printStackTrace();
                 }
@@ -82,7 +84,7 @@ public class MySQLConnection {
             }
 
             if (this.isConnected()) {
-                try (PreparedStatement preparedStatement  = con.prepareStatement(qry)){
+                try (PreparedStatement preparedStatement = con.prepareStatement(qry)) {
                     preparedStatement.executeUpdate();
                 } catch (SQLException var3) {
                     var3.printStackTrace();
@@ -104,7 +106,8 @@ public class MySQLConnection {
                             templates.add(new ArmorStandTemplate(
                                     set.getString("name"),
                                     new String(Base64.getDecoder().decode(set.getString("rawData").getBytes())),
-                                    set.getString("description")
+                                    set.getString("description"),
+                                    set.getTimestamp("CREATE_AT").toString()
                             ));
                         }
                     }

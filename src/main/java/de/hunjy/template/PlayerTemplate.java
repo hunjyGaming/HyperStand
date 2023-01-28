@@ -20,7 +20,6 @@ public class PlayerTemplate {
     }
 
     public static void saveTemplate(Player player, String name, String description, ArmorStand armorStand) {
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template", true));
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(armorStand.getHeadPose().getX());
@@ -77,6 +76,33 @@ public class PlayerTemplate {
             e.printStackTrace();
         }
         player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true));
+    }
+
+    public static void trySaveTemplate(Player player, String name, String description, ArmorStand armorStand) {
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template", true));
+
+        get(player, new ArmorstandQueryListener() {
+            @Override
+            public void onQueryResult(List<ArmorStandTemplate> templates) {
+                if (templates.size() >= 14) {
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_max", true));
+                    return;
+                }
+
+                for(ArmorStandTemplate template: templates) {
+                    if(template.getName().equalsIgnoreCase(name)) {
+                        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_exist", true));
+                        return;
+                    }
+                }
+                saveTemplate(player, name, description, armorStand);
+            }
+
+            @Override
+            public void onQueryError(Exception exception) {
+                onQueryError(exception);
+            }
+        });
     }
 
     public static void remove(Player player, String name) {

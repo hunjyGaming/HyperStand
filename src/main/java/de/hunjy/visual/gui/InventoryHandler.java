@@ -137,21 +137,21 @@ public class InventoryHandler {
 
         fillBackground(inventory, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName("§7").removeAllAttributes().build());
 
-        inventory.setItem(12, new ItemBuilder(Material.WITHER_SKELETON_SKULL).setDisplayName("§eKopf bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_HEAD").build());
+        inventory.setItem(12, new ItemBuilder(Material.WITHER_SKELETON_SKULL).setDisplayName("§eKopf bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_HEAD").build());
 
-        inventory.setItem(20, new ItemBuilder(Material.STICK).setDisplayName("§eRechten Arm bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RARM").build());
-        inventory.setItem(21, new ItemBuilder(Material.LEATHER_CHESTPLATE).setDisplayName("§eKörper bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_BODY").build());
-        inventory.setItem(22, new ItemBuilder(Material.STICK).setDisplayName("§eLinken Arm bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LARM").build());
+        inventory.setItem(20, new ItemBuilder(Material.STICK).setDisplayName("§eRechten Arm bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RARM").build());
+        inventory.setItem(21, new ItemBuilder(Material.LEATHER_CHESTPLATE).setDisplayName("§eKörper bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_BODY").build());
+        inventory.setItem(22, new ItemBuilder(Material.STICK).setDisplayName("§eLinken Arm bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LARM").build());
 
-        inventory.setItem(29, new ItemBuilder(Material.STICK).setDisplayName("§eRechtes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RLEG").build());
+        inventory.setItem(29, new ItemBuilder(Material.STICK).setDisplayName("§eRechtes Bein bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_RLEG").build());
         inventory.setItem(30, new ItemBuilder(Material.COMPASS).setDisplayName("§eAufheben").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_PICKUP").build());
-        inventory.setItem(31, new ItemBuilder(Material.STICK).setDisplayName("§eLinkes Bein bewegen").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LLEG").build());
+        inventory.setItem(31, new ItemBuilder(Material.STICK).setDisplayName("§eLinkes Bein bewegen").addLore("","§a§lShift + Rechtsklick:", "§7Setze die Position zurück!").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "POSITION_LLEG").build());
 
         inventory.setItem((inventory.getSize() - 9), new ItemBuilder(Material.ARROW).setDisplayName("§7Zurück").removeAllAttributes().addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("HYPERSTAND_ACTION", "OPEN_MAIN_MENU").build());
         player.openInventory(inventory);
         HyperStand.getInstance().getArmorStandManager().setSelectedArmorStand(player, armorStand);
 
-        if(HyperStand.getInstance().getMySQLConnection().isConnected()) {
+        if (HyperStand.getInstance().getMySQLConnection().isConnected()) {
             inventory.setItem(24, new ItemBuilder(Material.GHAST_TEAR).setDisplayName("§7Lade Templates...").removeAllAttributes().build());
             PlayerTemplate.get(player, new ArmorstandQueryListener() {
                 @Override
@@ -170,11 +170,7 @@ public class InventoryHandler {
 
                 }
             });
-        }else {
-
         }
-
-
     }
 
     public void openTemplateMenu(Player player, ArmorStand armorStand) {
@@ -197,12 +193,13 @@ public class InventoryHandler {
                     public void run() {
 
                         for (int row = 0; row < 4; row++) {
+                            if (row == 2) continue;
                             for (int i = 10; i < 17; i++) {
                                 inventory.setItem((i + (row * 9)), new ItemStack(Material.AIR));
                             }
                         }
                         for (ArmorStandTemplate template : templates) {
-                            inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + template.getName()).addLore("", "§7" + template.getDescription()).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("TEMPLATE_NAME", template.getName()).build());
+                            inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§e" + template.getName()).addLore("", "§7" + template.getDescription()).addNBTTag("ArmoStandID", armorStand.getUniqueId().toString()).addNBTTag("TEMPLATE_NAME", template.getName()).addNBTTag("CREATE_TIM", template.getTimestamp()).build());
                         }
 
                     }

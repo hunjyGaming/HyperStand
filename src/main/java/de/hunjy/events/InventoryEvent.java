@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -87,6 +88,7 @@ public class InventoryEvent implements Listener {
             if (!item.hasTag("ArmoStandID")) {
                 return;
             }
+            InventoryAction inventoryAction = event.getAction();
 
             ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(UUID.fromString(item.getString("ArmoStandID")));
 
@@ -96,11 +98,6 @@ public class InventoryEvent implements Listener {
                     player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_CREATET", true));
                     armorStandManager.createHyperStand(player, armorStand);
                     player.closeInventory();
-                    break;
-                }
-                case "CANCLE": {
-                    player.closeInventory();
-                    armorStandManager.returnHyperStandItemToPlayer(player);
                     break;
                 }
                 case "OPEN_MAIN_MENU": {
@@ -159,33 +156,64 @@ public class InventoryEvent implements Listener {
                     break;
                 }
                 case "POSITION_HEAD": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.HEAD_X);
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.HEAD, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.HEAD);
                     break;
                 }
                 case "POSITION_RARM": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.RARM_X);
+                        player.closeInventory();
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.RARM, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.RARM);
                     break;
                 }
                 case "POSITION_LARM": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.LARM_X);
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.LARM, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.LARM);
                     break;
                 }
                 case "POSITION_BODY": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.BODY_X);
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.BODY, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.BODY);
                     break;
                 }
                 case "POSITION_RLEG": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.RLEG_X);
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.RLEG, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.RLEG);
                     break;
                 }
                 case "POSITION_LLEG": {
+                    if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        player.closeInventory();
+                        armorStandManager.startEdit(player, armorStand, ArmorStandEditType.LLEG_X);
+                        break;
+                    }
+                    armorStandManager.resetToDefault(ArmorStandEditType.LLEG, armorStand);
                     player.closeInventory();
-                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.LLEG);
                     break;
                 }
                 case "POSITION_TEMPLATE": {

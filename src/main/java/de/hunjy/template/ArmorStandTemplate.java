@@ -1,6 +1,7 @@
 package de.hunjy.template;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import de.hunjy.armorstand.ArmorStandEditType;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
 
@@ -9,6 +10,8 @@ public class ArmorStandTemplate {
     String name;
     String description;
 
+    String timestamp;
+
     EulerAngle headPosition;
     EulerAngle bodyPosition;
     EulerAngle leftArmPosition;
@@ -16,8 +19,9 @@ public class ArmorStandTemplate {
     EulerAngle leftLegPosition;
     EulerAngle rightLegPosition;
 
-    public ArmorStandTemplate(String name, String data, String description) {
+    public ArmorStandTemplate(String name, String data, String description, String timestamp) {
         this.name = name;
+        this.timestamp = timestamp;
         this.description = description;
         String[] configuration = data.split(";");
 
@@ -71,6 +75,10 @@ public class ArmorStandTemplate {
         return description;
     }
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
     public EulerAngle getHeadPosition() {
         return headPosition;
     }
@@ -94,5 +102,7 @@ public class ArmorStandTemplate {
     public EulerAngle getRightLegPosition() {
         return rightLegPosition;
     }
+
+
 
 }

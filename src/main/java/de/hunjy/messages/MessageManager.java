@@ -14,7 +14,7 @@ public class MessageManager {
 
         messages.put("NEED_TO_LOOK_AT_ARMOR_STAND", "§cDu musst einen ArmorStand anschauen!");
         messages.put("COMMAND_NO_PERMISSIONS", "§cDazu hast du keine Rechte!");
-        messages.put("COMMAND_DEFAULT_USAGE", "§7Benutze §c/hyperstand halp §7für eine Liste aller Befehle");
+        messages.put("COMMAND_DEFAULT_USAGE", "§7Benutze §c/hyperstand help §7für eine Liste aller Befehle");
         messages.put("COMMAND_SAVE_USAGE", "§cBenutze /hyperstand save <Name> <Beschreibung>");
         messages.put("COMMAND_CREATE_ITEM_GIVEN", "§aDu hast einen ArmorStand erhalten!");
         messages.put("COMMAND_NAME_USAGE", "§cBenutze /hyperstand name <Name>");
@@ -31,6 +31,8 @@ public class MessageManager {
 
         messages.put("create_template", "§7Die Position wird gespeichert...");
         messages.put("create_template_success", "§aDie Position wurde erfolgreich gespeichert!");
+        messages.put("create_template_max", "§cDu hast bereits 14 Positionen gespeichert!");
+        messages.put("create_template_exist", "§cDer Name ist bereits vergeben");
         messages.put("CANT_PLACE_HERE", "§cDu kannst den HyperStand hier nicht platzieren!");
         messages.put("MYSQL_ERROR", "§cLeider ist ein Fehler aufgetreten.!");
     }

@@ -36,7 +36,7 @@ public class SaveSubCommand implements SubCommand {
                 description = description.substring(0, description.length() - 1);
             }
 
-            PlayerTemplate.saveTemplate(player, name, description, armorStand);
+            PlayerTemplate.trySaveTemplate(player, name, description, armorStand);
 
             return;
         }
