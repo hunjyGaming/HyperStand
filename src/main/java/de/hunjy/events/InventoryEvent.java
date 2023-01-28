@@ -209,7 +209,6 @@ public class InventoryEvent implements Listener {
                     if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         player.closeInventory();
                         armorStandManager.startEdit(player, armorStand, ArmorStandEditType.RARM_X);
-                        player.closeInventory();
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.RARM, armorStand);
