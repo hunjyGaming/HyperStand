@@ -3,9 +3,12 @@ package de.hunjy.armorstand;
 import de.hunjy.HyperStand;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -23,7 +26,7 @@ public class ArmorStandManager {
 
     private final HashMap<UUID, ItemStack> itemCache = new HashMap<>();
     private final HashSet<GlowColor> glowColors = new HashSet<>();
-    private final NamespacedKey namespacedKey = new NamespacedKey("hyperstand", "owner");
+    public final NamespacedKey namespacedKey = new NamespacedKey("hyperstand", "owner");
 
     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
@@ -104,6 +107,12 @@ public class ArmorStandManager {
     public boolean trySelectArmorStand(Player player, ArmorStand armorStand) {
 
         if (armorStandIsInUse(armorStand)) {
+            if (hasSelectedArmorStand(player)) {
+                if (getSelectedArmorStand(player) == armorStand) {
+                    finishEditing(player);
+                    return false;
+                }
+            }
             player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE", true));
             return true;
         }
@@ -122,6 +131,30 @@ public class ArmorStandManager {
 
     public void createHyperStand(Player player, ArmorStand armorStand) {
         armorStand.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, player.getUniqueId().toString());
+        armorStand.setGravity(false);
+        armorStand.setVisible(true);
+        armorStand.setBasePlate(false);
+        armorStand.setArms(true);
+
+        Firework firework= (Firework) armorStand.getLocation().getWorld().spawnEntity(armorStand.getEyeLocation(), EntityType.FIREWORK);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        fireworkMeta.addEffect(FireworkEffect.builder().withColor(Color.BLUE, Color.PURPLE).trail(true).with(FireworkEffect.Type.BURST).flicker(true).withFade(Color.WHITE).build());
+        firework.setFireworkMeta(fireworkMeta);
+        firework.detonate();
+        player.sendMessage("§7----------[§x§e§c§2§b§e§7§lH§x§d§c§3§3§e§9§ly§x§c§d§3§c§e§c§lp§x§b§e§4§5§e§e§le§x§a§e§4§e§f§0§lr§x§9§f§5§6§f§2§lS§x§8§f§5§f§f§4§lt§x§8§0§6§8§f§6§la§x§7§1§7§1§f§9§ln§x§6§1§7§9§f§b§ld§7]----------");
+        player.sendMessage("");
+        player.sendMessage("§7Du hast einen §x§e§c§2§b§e§7§lH§x§d§c§3§3§e§9§ly§x§c§d§3§c§e§c§lp§x§b§e§4§5§e§e§le§x§a§e§4§e§f§0§lr§x§9§f§5§6§f§2§lS§x§8§f§5§f§f§4§lt§x§8§0§6§8§f§6§la§x§7§1§7§1§f§9§ln§x§6§1§7§9§f§b§ld §7erstellt.");
+        player.sendMessage("");
+        player.sendMessage("§7Um ihn zu bearbeiten benutze §c/hyperstand edit");
+        player.sendMessage("§7oder klicke den §x§e§c§2§b§e§7§lH§x§d§c§3§3§e§9§ly§x§c§d§3§c§e§c§lp§x§b§e§4§5§e§e§le§x§a§e§4§e§f§0§lr§x§9§f§5§6§f§2§lS§x§8§f§5§f§f§4§lt§x§8§0§6§8§f§6§la§x§7§1§7§1§f§9§ln§x§6§1§7§9§f§b§ld §7mit Rechtsklick an,");
+        player.sendMessage("§7wärend du Sneakst!");
+        player.sendMessage("");
+        player.sendMessage("§7Mit §c/hyperstand help §7bekommst du mehr Infos!");
+        player.sendMessage("");
+        player.sendMessage("§7----------[§x§e§c§2§b§e§7§lH§x§d§c§3§3§e§9§ly§x§c§d§3§c§e§c§lp§x§b§e§4§5§e§e§le§x§a§e§4§e§f§0§lr§x§9§f§5§6§f§2§lS§x§8§f§5§f§f§4§lt§x§8§0§6§8§f§6§la§x§7§1§7§1§f§9§ln§x§6§1§7§9§f§b§ld§7]----------");
+
+
+
     }
 
     public boolean armorStandIsInUse(ArmorStand armorStand) {
@@ -154,7 +187,7 @@ public class ArmorStandManager {
 
     public void removeSelectedArmorStand(Player player) {
         ArmorStand armorStand = selectedArmorStand.get(player.getUniqueId());
-        if(selectedArmorStandCache.contains(armorStand)) {
+        if (selectedArmorStandCache.contains(armorStand)) {
             armorStand.setVisible(false);
             selectedArmorStandCache.remove(armorStand);
         }
@@ -207,7 +240,7 @@ public class ArmorStandManager {
 
     public void setDisplayName(ArmorStand armorStand, String displayName) {
         armorStand.setCustomNameVisible(true);
-        armorStand.setCustomName(displayName.replace("&", "§"));
+        armorStand.setCustomName(displayName);
     }
 
     public void useHyperStandItem(Player player, ItemStack itemStack) {
@@ -215,10 +248,21 @@ public class ArmorStandManager {
         itemCache.put(player.getUniqueId(), itemStack);
     }
 
+    public void removeHyperStandItemFromCahce(Player player) {
+        if (itemCache.containsKey(player.getUniqueId())) {
+            itemCache.remove(player.getUniqueId());
+        }
+    }
+
     public void returnHyperStandItemToPlayer(Player player) {
         if (itemCache.containsKey(player.getUniqueId())) {
             player.getInventory().addItem(itemCache.get(player.getUniqueId()));
+            itemCache.remove(player.getUniqueId());
         }
+    }
+
+    public boolean isInItemCache(Player player) {
+        return itemCache.containsKey(player.getUniqueId());
     }
 
     public void returnArmorStand(Player player) {

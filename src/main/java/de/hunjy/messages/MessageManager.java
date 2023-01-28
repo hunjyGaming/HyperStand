@@ -29,20 +29,46 @@ public class MessageManager {
         messages.put("TEMPLATE_DELETE_ERROR", "§cDie Position konnte nicht gelöscht werden!");
         messages.put("TEMPLATE_DELETE_NOT_EXIST", "§cEs wurde keine Position mit dem Namen gefunden!");
 
+        messages.put("MYSQL_ERROR", "§cLeider ist ein Fehler aufgetreten.!");
         messages.put("create_template", "§7Die Position wird gespeichert...");
-        messages.put("create_template_success", "§aDie Position wurde erfolgreich gespeichert!");
+        messages.put("create_template_success", "§aDie Position §a§l{0} §awurde erfolgreich gespeichert!");
         messages.put("create_template_max", "§cDu hast bereits 14 Positionen gespeichert!");
         messages.put("create_template_exist", "§cDer Name ist bereits vergeben");
+
         messages.put("CANT_PLACE_HERE", "§cDu kannst den HyperStand hier nicht platzieren!");
-        messages.put("MYSQL_ERROR", "§cLeider ist ein Fehler aufgetreten.!");
+
+
+        messages.put("USE_HYPERSTAND", "§7Dises Item kann nicht platziert werden!");
+        messages.put("HOW_TO_USE_HYPERSTAND", "§7Du musst auf einen Rüstungsständer klicken!");
+
+
         messages.put("HYPSERSTAND_SET_NAME", "§7Benutze hierfür §c/hyperstand name§7!");
+        messages.put("NAME_TO_LONG", "§cDer Name ist zu lang! Maximal 30 Zeichen!");
+        messages.put("NAME_SET", "§aDer Name wurde erfolgreich auf {0} §agesetzt!");
     }
 
     public String get(String key) {
         return messages.get(key);
     }
 
+    public String get(String key, String... placeholder) {
+        return setPlaceHolders(messages.get(key), placeholder);
+    }
+
+    public String get(String key, boolean prefix, String... placeholder) {
+        return setPlaceHolders(((prefix) ? get("PREFIX") : "") + " §7" + messages.get(key), placeholder);
+    }
+
     public String get(String key, boolean prefix) {
         return ((prefix) ? get("PREFIX") : "") + " §7" + messages.get(key);
+    }
+
+    private String setPlaceHolders(String message, String... placeholder) {
+        String msg = message;
+        for (int i = 0; i < placeholder.length; i++) {
+            msg = msg.replace("{" + i + "}", placeholder[i]);
+        }
+
+        return msg;
     }
 }

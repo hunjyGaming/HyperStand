@@ -2,6 +2,8 @@ package de.hunjy.command.subcommands;
 
 import de.hunjy.HyperStand;
 import de.hunjy.command.SubCommand;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -34,7 +36,14 @@ public class NameSubCommand implements SubCommand {
             }
 
             displayName = displayName.substring(0, displayName.length() - 1);
+            displayName = displayName.replace("&", "§");
 
+            String rawName = ChatColor.stripColor(displayName);
+
+            if(rawName.length() > 30) {
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_TO_LONG", true));
+                return;
+            }
 
             if (HyperStand.getInstance().getArmorStandManager().trySelectArmorStand(player, armorStand)) {
                 return;
@@ -42,6 +51,7 @@ public class NameSubCommand implements SubCommand {
 
 
             HyperStand.getInstance().getArmorStandManager().setDisplayName(armorStand, displayName);
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_SET", true, displayName));
             return;
         }
 
@@ -52,6 +62,7 @@ public class NameSubCommand implements SubCommand {
     public String getDescription() {
         return "Gebe deinem HyperStand einen Namen";
     }
+
     @Override
     public String getPermission() {
         return "hyperstand.edit";

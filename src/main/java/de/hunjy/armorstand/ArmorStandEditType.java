@@ -33,7 +33,8 @@ public enum ArmorStandEditType {
     BODY,
     BODY_X,
     BODY_Y,
-    BODY_Z;
+    BODY_Z,
+    ARMOR;
 
     public void modify(Player player, ArmorStand armorStand) {
 
@@ -132,6 +133,7 @@ public enum ArmorStandEditType {
     }
 
     public void sendTitle(Player player) {
+        if(this == ARMOR) return;
         String pos = this.toString().split("_")[0];
         String axis = this.toString().split("_")[1];
 

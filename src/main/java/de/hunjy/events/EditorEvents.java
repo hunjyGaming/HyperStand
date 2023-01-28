@@ -3,18 +3,20 @@ package de.hunjy.events;
 import de.hunjy.HyperStand;
 import de.hunjy.armorstand.ArmorStandEditType;
 import de.hunjy.armorstand.ArmorStandManager;
+import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 public class EditorEvents implements Listener {
 
@@ -55,14 +57,39 @@ public class EditorEvents implements Listener {
     }
 
     @EventHandler
-    public void onInteract(EntityDamageByEntityEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (event.getItem() == null) return;
+        if (event.getItem().getType() == Material.AIR) return;
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            NBTItem item = new NBTItem(event.getItem());
+            if (item.hasTag("hyperstand")) {
+                event.setCancelled(true);
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("USE_HYPERSTAND", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("HOW_TO_USE_HYPERSTAND", true));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamgardByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof ArmorStand)) return;
 
         ArmorStand armorStand = (ArmorStand) event.getEntity();
 
+
+        if (event.getDamager() instanceof Firework) {
+            if (armorStand.getPersistentDataContainer().has(armorStandManager.namespacedKey)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         if (!(event.getDamager() instanceof Player)) {
             return;
         }
+
         Player player = (Player) event.getDamager();
 
         if (!armorStandManager.isEditing(player)) {
@@ -77,11 +104,6 @@ public class EditorEvents implements Listener {
             return;
         }
 
-        if (armorStandManager.getSelectedArmorStand(player) != armorStand) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE", true));
-            event.setCancelled(true);
-            return;
-        }
         if (armorStandManager.getCurrentEditType(player).toString().contains("_")) {
             armorStandManager.getCurrentEditType(player).switchToNextStep(player);
             if (armorStandManager.getCurrentEditType(player) != null) {
@@ -97,6 +119,18 @@ public class EditorEvents implements Listener {
                 armorStandManager.finishEditing(player);
             } else {
                 player.sendMessage(HyperStand.getInstance().getMessageManager().get("CANT_PLACE_HERE"));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof ArmorStand)) return;
+
+        ArmorStand armorStand = (ArmorStand) event.getEntity();
+        if (armorStandManager.armorStandIsInUse(armorStand)) {
+            if(event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                event.setCancelled(true);
             }
         }
     }

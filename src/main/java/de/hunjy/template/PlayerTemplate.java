@@ -75,7 +75,7 @@ public class PlayerTemplate {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true, name));
     }
 
     public static void trySaveTemplate(Player player, String name, String description, ArmorStand armorStand) {

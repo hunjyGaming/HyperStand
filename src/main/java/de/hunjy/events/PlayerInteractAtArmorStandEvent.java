@@ -27,10 +27,13 @@ public class PlayerInteractAtArmorStandEvent implements Listener {
         if(HyperStand.getInstance().getArmorStandManager().armorStandIsInUse(armorStand)) {
             if (HyperStand.getInstance().getArmorStandManager().hasSelectedArmorStand(player)) {
                 if (HyperStand.getInstance().getArmorStandManager().getSelectedArmorStand(player) != armorStand) {
+                    System.out.println(1);
                     player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE", true));
                     return;
                 }
             }else {
+                System.out.println(2);
+
                 player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE", true));
                 return;
             }
@@ -51,7 +54,6 @@ public class PlayerInteractAtArmorStandEvent implements Listener {
                     return;
                 }
             }
-
         }
 
 

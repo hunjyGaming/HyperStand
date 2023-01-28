@@ -61,6 +61,44 @@ public class InventoryEvent implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
+
+        if (armorStandManager.getCurrentEditType(player) == ArmorStandEditType.ARMOR) {
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+                return;
+            }
+            if (event.getCursor() != null) {
+                if (event.getCursor().getType() != Material.AIR) {
+                    if (armorStandManager.isEditing(player)) {
+                        String mat = event.getCursor().toString();
+                        if(event.getClickedInventory() == player.getInventory()){
+                            return;
+                        }
+                        if (event.getSlot() == INV_SLOT_CHEST) {
+                            if (!mat.contains("_CHESTPLATE")) {
+                                event.setCancelled(true);
+                                event.setResult(Event.Result.DENY);
+                            }
+                        }
+                        if (event.getSlot() == INV_SLOT_LEGS) {
+                            if (!mat.contains("_LEGGINGS")) {
+                                event.setCancelled(true);
+                                event.setResult(Event.Result.DENY);
+                            }
+                        }
+
+                        if (event.getSlot() == INV_SLOT_BOOTS) {
+                            if (!mat.contains("_BOOTS")) {
+                                event.setCancelled(true);
+                                event.setResult(Event.Result.DENY);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if (event.getCurrentItem() == null)
             return;
 
@@ -75,13 +113,12 @@ public class InventoryEvent implements Listener {
                 event.setResult(Event.Result.DENY);
             }
         }
-
         if (item.hasTag("HYPERSTAND_ACTION")) {
             String action = item.getString("HYPERSTAND_ACTION");
 
             if (action.equals("CANCLE")) {
-                player.closeInventory();
                 armorStandManager.returnHyperStandItemToPlayer(player);
+                player.closeInventory();
                 return;
             }
 
@@ -96,6 +133,7 @@ public class InventoryEvent implements Listener {
             switch (action) {
                 case "CREATE_HYPERSTAND": {
                     player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_CREATET", true));
+                    armorStandManager.removeHyperStandItemFromCahce(player);
                     armorStandManager.createHyperStand(player, armorStand);
                     player.closeInventory();
                     break;
@@ -105,6 +143,7 @@ public class InventoryEvent implements Listener {
                     break;
                 }
                 case "OPEN_ARMOR_MENU": {
+                    armorStandManager.startEdit(player, armorStand, ArmorStandEditType.ARMOR);
                     inventoryHandler.openArmorMenu(player, armorStand);
                     break;
                 }
@@ -162,8 +201,9 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.HEAD, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
+
                 }
                 case "POSITION_RARM": {
                     if (inventoryAction != InventoryAction.MOVE_TO_OTHER_INVENTORY) {
@@ -173,7 +213,7 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.RARM, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
                 }
                 case "POSITION_LARM": {
@@ -183,7 +223,7 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.LARM, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
                 }
                 case "POSITION_BODY": {
@@ -193,7 +233,7 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.BODY, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
                 }
                 case "POSITION_RLEG": {
@@ -203,7 +243,7 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.RLEG, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
                 }
                 case "POSITION_LLEG": {
@@ -213,7 +253,7 @@ public class InventoryEvent implements Listener {
                         break;
                     }
                     armorStandManager.resetToDefault(ArmorStandEditType.LLEG, armorStand);
-                    player.closeInventory();
+                    closePlayerInventory(player, 1);
                     break;
                 }
                 case "POSITION_TEMPLATE": {
@@ -280,6 +320,24 @@ public class InventoryEvent implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
         Player player = (Player) event.getPlayer();
+
+        if (armorStandManager.isInItemCache(player)) {
+            armorStandManager.returnHyperStandItemToPlayer(player);
+            return;
+        }
+
+
+        if (!armorStandManager.hasSelectedArmorStand(player)) {
+            return;
+        }
+
+        ArmorStand armorStand = armorStandManager.getSelectedArmorStand(player);
+
+        if (armorStandManager.getCurrentEditType(player) != ArmorStandEditType.MOVE) {
+            armorStandManager.removeSelectedArmorStand(player);
+        }
+
+
         if (inventory.getItem(10) == null) {
             return;
         }
@@ -287,23 +345,27 @@ public class InventoryEvent implements Listener {
         if (!inventory.getItem(10).hasItemMeta()) {
             return;
         }
-
-        if (!armorStandManager.hasSelectedArmorStand(player)) {
-            return;
-        }
-
         NBTItem item = new NBTItem(inventory.getItem(10));
 
         if (item.hasTag("ArmoStandID_CHECK")) {
-            ArmorStand armorStand = armorStandManager.getSelectedArmorStand(player);
             if (armorStand.getUniqueId().toString().equals(item.getString("ArmoStandID_CHECK"))) {
                 updateArmorStandInventory(armorStand, inventory);
             }
         }
 
-        armorStandManager.removeSelectedArmorStand(player);
+
     }
 
+
+    public void closePlayerInventory(Player player, int delay) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.closeInventory();
+                this.cancel();
+            }
+        }.runTaskLater(HyperStand.getInstance(), delay);
+    }
 
     private void updateArmorStandInventory(ArmorStand armorStand, Inventory inventory) {
         if (armorStand.isDead() || armorStand == null) {
