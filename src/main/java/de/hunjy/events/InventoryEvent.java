@@ -325,15 +325,12 @@ public class InventoryEvent implements Listener {
             armorStandManager.returnHyperStandItemToPlayer(player);
             return;
         }
+
         if (!armorStandManager.hasSelectedArmorStand(player)) {
             return;
         }
 
         ArmorStand armorStand = armorStandManager.getSelectedArmorStand(player);
-
-        if(armorStandManager.getCurrentEditType(player) == ArmorStandEditType.ARMOR) {
-            armorStandManager.finishEditing(player);
-        }
 
         if (armorStandManager.getCurrentEditType(player) != ArmorStandEditType.MOVE) {
             armorStandManager.removeSelectedArmorStand(player);
@@ -352,6 +349,7 @@ public class InventoryEvent implements Listener {
         if (item.hasTag("ArmoStandID_CHECK")) {
             if (armorStand.getUniqueId().toString().equals(item.getString("ArmoStandID_CHECK"))) {
                 updateArmorStandInventory(armorStand, inventory);
+                armorStandManager.finishEditing(player);
             }
         }
 
