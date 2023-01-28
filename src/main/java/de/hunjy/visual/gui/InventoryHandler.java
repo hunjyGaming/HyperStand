@@ -220,7 +220,7 @@ public class InventoryHandler {
     }
 
     public void openCreateMenu(Player player, ArmorStand armorStand) {
-        Inventory inventory = createInventory(player, Colorizer.gradientNormalise("HyperStand", 0.8f, 1, 1) + " §5| Erstelle einen HyperStand", 27);
+        Inventory inventory = createInventory(player, Colorizer.gradientNormalise("HyperStand", 0.8f, 1, 1), 27);
 
         fillBackground(inventory, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName("§7").removeAllAttributes().build());
 
