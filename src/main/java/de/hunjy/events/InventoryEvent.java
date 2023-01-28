@@ -220,6 +220,11 @@ public class InventoryEvent implements Listener {
                     inventoryHandler.openTemplateMenu(player, armorStand);
                     break;
                 }
+                case "TOGGLE_NAME": {
+                    player.closeInventory();
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPSERSTAND_SET_NAME", true));
+                    break;
+                }
             }
         }
         if (item.hasTag("HYPERSTAND_GLOW_COLOR")) {

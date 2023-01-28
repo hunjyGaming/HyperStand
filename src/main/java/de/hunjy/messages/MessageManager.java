@@ -35,6 +35,7 @@ public class MessageManager {
         messages.put("create_template_exist", "§cDer Name ist bereits vergeben");
         messages.put("CANT_PLACE_HERE", "§cDu kannst den HyperStand hier nicht platzieren!");
         messages.put("MYSQL_ERROR", "§cLeider ist ein Fehler aufgetreten.!");
+        messages.put("HYPSERSTAND_SET_NAME", "§7Benutze hierfür §c/hyperstand name§7!");
     }
 
     public String get(String key) {
