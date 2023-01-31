@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
     <build>
         <plugins>
             <plugin>
@@ -39,7 +40,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>java.sql</pattern>
+                                    <shadedPattern>hyperstand.lib.java.sql</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -51,6 +57,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
     </build>
 
     <repositories>
