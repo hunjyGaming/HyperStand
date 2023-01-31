@@ -113,6 +113,7 @@ public class InventoryEvent implements Listener {
                 event.setResult(Event.Result.DENY);
             }
         }
+
         if (item.hasTag("HYPERSTAND_ACTION")) {
             String action = item.getString("HYPERSTAND_ACTION");
 

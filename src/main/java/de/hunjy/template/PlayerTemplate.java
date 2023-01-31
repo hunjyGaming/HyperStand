@@ -74,6 +74,7 @@ public class PlayerTemplate {
             connection.query(preparedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR", true));
         }
         player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true, name));
     }
@@ -100,7 +101,8 @@ public class PlayerTemplate {
 
             @Override
             public void onQueryError(Exception exception) {
-                onQueryError(exception);
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR", true));
+                exception.printStackTrace();
             }
         });
     }

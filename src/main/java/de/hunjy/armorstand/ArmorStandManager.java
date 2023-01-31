@@ -235,7 +235,7 @@ public class ArmorStandManager {
             selectedArmorStandCache.add(armorStand);
         }
         armorStand.setVisible(true);
-        player.sendTitle("§eArmorStand aufgehoben", "§7Rechtsklick um wieder loszulassen", 5, 60, 5);
+        player.sendTitle("§eArmorStand aufgehoben", "§7Linksklick um wieder loszulassen", 5, 60, 5);
     }
 
     public void setDisplayName(ArmorStand armorStand, String displayName) {
