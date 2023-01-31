@@ -14,7 +14,7 @@ public class NameSubCommand implements SubCommand {
     public void onCommand(Player player, String[] args) {
 
         if (args.length <= 1) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_NAME_USAGE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_NAME_USAGE"));
             return;
         }
 
@@ -41,7 +41,7 @@ public class NameSubCommand implements SubCommand {
             String rawName = ChatColor.stripColor(displayName);
 
             if(rawName.length() > 30) {
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_TO_LONG", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_TO_LONG"));
                 return;
             }
 
@@ -51,11 +51,11 @@ public class NameSubCommand implements SubCommand {
 
 
             HyperStand.getInstance().getArmorStandManager().setDisplayName(armorStand, displayName);
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_SET", true, displayName));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("NAME_SET", displayName));
             return;
         }
 
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND"));
     }
 
     @Override

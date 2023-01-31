@@ -67,8 +67,8 @@ public class EditorEvents implements Listener {
             NBTItem item = new NBTItem(event.getItem());
             if (item.hasTag("hyperstand")) {
                 event.setCancelled(true);
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("USE_HYPERSTAND", true));
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("HOW_TO_USE_HYPERSTAND", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("USE_HYPERSTAND"));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("HOW_TO_USE_HYPERSTAND"));
             }
         }
     }

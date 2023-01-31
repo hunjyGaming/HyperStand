@@ -22,7 +22,7 @@ public class CreateSubCommand implements SubCommand {
                 .setCancelClick(false)
                 .build();
 
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_CREATE_ITEM_GIVEN", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_CREATE_ITEM_GIVEN"));
         player.getInventory().addItem(itemStack);
 
     }

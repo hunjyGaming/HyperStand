@@ -23,7 +23,7 @@ public class EditSubCommand implements SubCommand {
             return;
         }
 
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND"));
     }
 
     @Override

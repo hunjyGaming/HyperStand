@@ -133,7 +133,7 @@ public class InventoryEvent implements Listener {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 5);
             switch (action) {
                 case "CREATE_HYPERSTAND": {
-                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_CREATET", true));
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_CREATED"));
                     armorStandManager.removeHyperStandItemFromCahce(player);
                     armorStandManager.createHyperStand(player, armorStand);
                     player.closeInventory();
@@ -262,7 +262,7 @@ public class InventoryEvent implements Listener {
                 }
                 case "TOGGLE_NAME": {
                     player.closeInventory();
-                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPSERSTAND_SET_NAME", true));
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPSERSTAND_SET_NAME"));
                     break;
                 }
             }

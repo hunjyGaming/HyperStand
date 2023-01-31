@@ -113,17 +113,17 @@ public class ArmorStandManager {
                     return false;
                 }
             }
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE"));
             return true;
         }
 
         if (player.hasPermission("hyperstand.admin.bypass")) return false;
         if (!isEdibleArmorStand(armorStand)) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NOT_EDIBLE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NOT_EDIBLE"));
             return true;
         }
         if (!canSelectArmorStand(player, armorStand)) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NO_ACCESS", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NO_ACCESS"));
             return true;
         }
         return false;

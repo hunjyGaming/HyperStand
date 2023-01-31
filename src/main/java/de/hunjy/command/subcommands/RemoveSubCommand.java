@@ -16,7 +16,7 @@ public class RemoveSubCommand implements SubCommand {
         }
 
         if (args.length != 2) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE"));
             return;
         }
 

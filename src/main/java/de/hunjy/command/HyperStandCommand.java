@@ -30,21 +30,21 @@ public class HyperStandCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_DEFAULT_USAGE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_DEFAULT_USAGE"));
             return false;
         }
 
         String rawSubCommand = args[0].toLowerCase();
 
         if (!commands.containsKey(rawSubCommand)) {
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_DEFAULT_USAGE", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_DEFAULT_USAGE"));
             return false;
         }
         SubCommand subCommand = commands.get(rawSubCommand);
 
         if (subCommand.getPermission() != null) {
             if (!player.hasPermission(subCommand.getPermission())) {
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_NO_PERMISSIONS", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_NO_PERMISSIONS"));
                 return false;
             }
         }

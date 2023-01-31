@@ -21,7 +21,7 @@ public class SaveSubCommand implements SubCommand {
         if (entity != null) if (entity instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) entity;
             if (args.length <= 1) {
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("COMMAND_SAVE_USAGE"));
                 return;
             }
 
@@ -41,7 +41,7 @@ public class SaveSubCommand implements SubCommand {
             return;
         }
 
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("NEED_TO_LOOK_AT_ARMOR_STAND"));
     }
 
     @Override

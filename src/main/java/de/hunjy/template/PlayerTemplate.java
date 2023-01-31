@@ -74,25 +74,25 @@ public class PlayerTemplate {
             connection.query(preparedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
-            player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR", true));
+            player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR"));
         }
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", true, name));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_success", name));
     }
 
     public static void trySaveTemplate(Player player, String name, String description, ArmorStand armorStand) {
-        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template", true));
+        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template"));
 
         get(player, new ArmorstandQueryListener() {
             @Override
             public void onQueryResult(List<ArmorStandTemplate> templates) {
                 if (templates.size() >= 14) {
-                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_max", true));
+                    player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_max"));
                     return;
                 }
 
                 for(ArmorStandTemplate template: templates) {
                     if(template.getName().equalsIgnoreCase(name)) {
-                        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_exist", true));
+                        player.sendMessage(HyperStand.getInstance().getMessageManager().get("create_template_exist"));
                         return;
                     }
                 }
@@ -101,7 +101,7 @@ public class PlayerTemplate {
 
             @Override
             public void onQueryError(Exception exception) {
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("MYSQL_ERROR"));
                 exception.printStackTrace();
             }
         });
@@ -118,16 +118,16 @@ public class PlayerTemplate {
                             preparedStatement.setString(1, player.getUniqueId().toString());
                             preparedStatement.setString(2, name);
                             connection.query(preparedStatement);
-                            player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_COMPLETE", true));
+                            player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_COMPLETE"));
                             return;
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_ERROR", true));
+                            player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_ERROR"));
                         }
                     }
                 }
 
-                player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_NOT_EXIST", true));
+                player.sendMessage(HyperStand.getInstance().getMessageManager().get("TEMPLATE_DELETE_NOT_EXIST"));
             }
 
             @Override
