@@ -7,12 +7,13 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public class PlayerInteractAtArmorStandEvent implements Listener {
 
-    @EventHandler
+    @EventHandler(priority =  EventPriority.HIGHEST)
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -27,7 +28,6 @@ public class PlayerInteractAtArmorStandEvent implements Listener {
         if(HyperStand.getInstance().getArmorStandManager().armorStandIsInUse(armorStand)) {
             if (HyperStand.getInstance().getArmorStandManager().hasSelectedArmorStand(player)) {
                 if (HyperStand.getInstance().getArmorStandManager().getSelectedArmorStand(player) != armorStand) {
-                    System.out.println(1);
                     player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALREADY_IN_USE"));
                     return;
                 }
@@ -44,6 +44,11 @@ public class PlayerInteractAtArmorStandEvent implements Listener {
             if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 NBTItem item = new NBTItem(player.getInventory().getItemInMainHand());
                 if (item.hasTag("hyperstand")) {
+
+                    if(event.isCancelled()) {
+                        player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_NO_ACCESS"));
+                        return;
+                    }
                     if (HyperStand.getInstance().getArmorStandManager().isEdibleArmorStand(armorStand)) {
                         player.sendMessage(HyperStand.getInstance().getMessageManager().get("HYPERSTAND_ALLRADY_EXIST"));
                         event.setCancelled(true);

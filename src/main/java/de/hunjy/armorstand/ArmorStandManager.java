@@ -1,6 +1,7 @@
 package de.hunjy.armorstand;
 
 import de.hunjy.HyperStand;
+import de.hunjy.logger.ILogger;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -135,6 +136,9 @@ public class ArmorStandManager {
         armorStand.setVisible(true);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
+
+        ILogger.writeToLogFile(player.getName() + " [" + player.getUniqueId().toString() + "] -> Location: world: " + armorStand.getLocation().getWorld().getName() + " | X: "  +
+                armorStand.getLocation().getX() + " | Y: " + armorStand.getLocation().getY() + " | Z: " + armorStand.getLocation().getZ());
 
         Firework firework= (Firework) armorStand.getLocation().getWorld().spawnEntity(armorStand.getEyeLocation(), EntityType.FIREWORK);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
